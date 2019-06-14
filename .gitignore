@@ -1,5 +1,5 @@
 gui/*
-!gui/include/
-!gui/src/
-!gui/ui/
+!gui/include/*.h
+!gui/src/*.cpp
+!gui/ui/*.ui
 !gui/isolation.pro
