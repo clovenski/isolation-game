@@ -17,7 +17,7 @@ class Engine {
          *      double - time limit for AI to think (in seconds)
          *          ie. 20.0 for 20 seconds
          */ 
-        Engine(bool, double);
+        Engine(bool xFirst = true, double timeLimit = 2.0);
         /* Get a list of the possible moves for the player. */
         std::vector<Position> getChoices();
         /* Allow the AI to think and make a move, returning the

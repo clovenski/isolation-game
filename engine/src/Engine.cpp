@@ -7,7 +7,7 @@ Position Engine::getRandCompMove() {
     return moves.at(rand() % moves.size());
 }
 
-Engine::Engine(bool xFirst = true, double timeLimit = 2.0) : TIME_LIMIT(timeLimit), state(xFirst) {
+Engine::Engine(bool xFirst, double timeLimit) : TIME_LIMIT(timeLimit), state(xFirst) {
     this->xFirst = xFirst;
     if (TIME_LIMIT.count() >= 20.0) {
         startDepth = 8;

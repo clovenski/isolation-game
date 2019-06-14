@@ -1,6 +1,7 @@
 #ifndef ISOLATIONFORM_H
 #define ISOLATIONFORM_H
 
+#include "Engine.h"
 #include <QWidget>
 
 namespace Ui {
