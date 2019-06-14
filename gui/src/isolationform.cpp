@@ -8,9 +8,6 @@ IsolationForm::IsolationForm(QWidget *parent) :
     // make the ui a fixed size
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);
-    int i = 1;
-    Engine *eng = new Engine(false, i);
-
 }
 
 IsolationForm::~IsolationForm()
