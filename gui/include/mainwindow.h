@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "isolationform.h"
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QPushButton>
@@ -9,10 +8,12 @@
 #include <QLabel>
 #include <QStackedWidget>
 
+class IsolationForm;
+
 namespace Ui {
 class MainWindow;
-static int width;
-static int height;
+static const int width = 800;
+static const int height = 600;
 
 }
 
@@ -22,13 +23,17 @@ static bool easy = false;
 static bool medium = false;
 static bool hard = false;
 
-// whos turn it is, true being player, false being computer
+// whos turn it is at the start
 static bool playerFirst = false;
 static bool computerFirst = false;
 
-// scene/board width and height
-static const int boardWidth = 560;
-static const int boardHeight = 560;
+// scene width and height
+// must be divisble by boardSize for pixelSize
+static const int sceneSize = 560;
+// boardSize x boardSize board, 8 x 8 in this case
+static const int boardSize = 8;
+// the pixel x pixel size of the squares in the board
+static const int pixelSize = sceneSize / boardSize;
 }
 
 class MainWindow : public QMainWindow
@@ -60,6 +65,8 @@ private:
     // the board's corresponding view and scene
     QGraphicsView *view;
     QGraphicsScene *scene;
+
+    IsolationForm *isoForm;
 };
 
 #endif // MAINWINDOW_H

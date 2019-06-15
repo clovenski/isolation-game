@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "isolationform.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -56,7 +57,7 @@ void MainWindow::on_startButton_clicked()
     {
         QStackedWidget *stackedWidget;
         stackedWidget = new QStackedWidget();
-        IsolationForm *isoForm = new IsolationForm();
+        isoForm = new IsolationForm();
         stackedWidget->addWidget(isoForm);
         this->setCentralWidget(stackedWidget);
     }
