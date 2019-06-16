@@ -3,6 +3,8 @@
 
 #include "Engine.h"
 #include "mainwindow.h"
+#include "playerpiece.h"
+
 #include <QWidget>
 #include <QBrush>
 #include <QColor>
@@ -34,12 +36,16 @@ private:
         int x;
         int y;
 
+        // the position in the game board as well as boardSquares array.
+        Position position;
+
         // whether or not this block has been occupied and blocked
         bool blocked = false;
 
     };
-
     BoardSquare boardSquares[GameSettings::boardSize][GameSettings::boardSize];
+    PlayerPiece *humanPlayer;
+    PlayerPiece *computerPlayer;
 
 };
 

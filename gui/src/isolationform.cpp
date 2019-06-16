@@ -56,6 +56,7 @@ IsolationForm::IsolationForm(QWidget *parent) :
         }
         everyOther = !everyOther;
     }
+
     // draw in the board squares
 //    for(auto &squareRow: boardSquares)
 //    {
@@ -70,6 +71,9 @@ IsolationForm::IsolationForm(QWidget *parent) :
 //        }
 //    }
 
+    // add the player's pieces
+    humanPlayer = new PlayerPiece(":/images/chess-piece-images/queenwhite.png");
+    scene->addItem(humanPlayer);
 
 }
 

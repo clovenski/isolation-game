@@ -28,6 +28,7 @@ SOURCES += \
     src/isolationform.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
+    src/playerpiece.cpp \
     ../engine/src/Engine.cpp \
     ../engine/src/Minimax.cpp \
     ../engine/src/State.cpp
@@ -36,6 +37,7 @@ HEADERS += \
     include/isolationform.h \
     include/isolationgame.h \
     include/mainwindow.h \
+    include/playerpiece.h \
     ../engine/include/Engine.h \
     ../engine/include/Minimax.h \
     ../engine/include/State.h
@@ -52,3 +54,6 @@ INCLUDEPATH += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc
