@@ -7,8 +7,12 @@ Position Engine::getRandCompMove() {
     return moves.at(rand() % moves.size());
 }
 
-Engine::Engine(bool xFirst, double timeLimit) : TIME_LIMIT(timeLimit), state(xFirst) {
-    this->xFirst = xFirst;
+void Engine::processTimeLimit(double timeLimit) {
+    if (timeLimit >= 1.0) {
+        TIME_LIMIT = chrono::duration<double>(timeLimit);
+    } else {
+        TIME_LIMIT = chrono::duration<double>(2.0);
+    }
     if (TIME_LIMIT.count() >= 20.0) {
         startDepth = 8;
         earlyStopLimit = 1.8;
@@ -23,6 +27,20 @@ Engine::Engine(bool xFirst, double timeLimit) : TIME_LIMIT(timeLimit), state(xFi
         earlyStopLimit = 0.5;
     }
     Minimax::earlyStopLimit = earlyStopLimit;
+}
+
+Engine::Engine(bool xFirst, double timeLimit) : state(xFirst) {
+    this->xFirst = xFirst;
+    processTimeLimit(timeLimit);
+}
+
+void Engine::setWhoFirst(bool xFirst) {
+    state.setWhoFirst(xFirst);
+    this->xFirst = xFirst;
+}
+
+void Engine::setTimeLimit(double timeLimit) {
+    processTimeLimit(timeLimit);
 }
 
 vector<Position> Engine::getChoices() {

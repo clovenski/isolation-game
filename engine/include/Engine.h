@@ -7,17 +7,27 @@ class Engine {
     private:
         State state;
         bool xFirst;
-        const std::chrono::duration<double> TIME_LIMIT;
+        std::chrono::duration<double> TIME_LIMIT;
         int startDepth;
         double earlyStopLimit;
         Position getRandCompMove();
+        void processTimeLimit(double);
     public:
         /* Construct a new engine.
          *      bool - whether or not player X (computer) goes first
          *      double - time limit for AI to think (in seconds)
          *          ie. 20.0 for 20 seconds
+         *          must be >= 1.0, otherwise defaults to 2.0 seconds
          */ 
         Engine(bool xFirst = true, double timeLimit = 2.0);
+        /* Set who goes first; true for player X (computer) goes first,
+         * false for player O (user) goes first
+         */
+        void setWhoFirst(bool);
+        /* Set the time limit for the AI to think (in seconds)
+         * Must be >= 1.0, otherwise defaults to 2.0 seconds
+         */
+        void setTimeLimit(double);
         /* Get a list of the possible moves for the player. */
         std::vector<Position> getChoices();
         /* Allow the AI to think and make a move, returning the

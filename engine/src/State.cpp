@@ -72,6 +72,10 @@ State::State(bool xTop) {
     xTurn = xTop;
 }
 
+void State::setWhoFirst(bool xFirst) {
+    xTop = xFirst;
+}
+
 bool State::validIndex(int index) {
     if (index >= 0 && index < 8) {
         return true;
@@ -335,6 +339,7 @@ void State::reset() {
     xLocalMoves = oLocalMoves = 3;
 
     winner = &NO_WINNER;
+    xTurn = xTop;
 }
 
 string State::toString() {

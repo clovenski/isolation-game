@@ -44,6 +44,7 @@ class State {
         };
     public:
         State(bool);
+        void setWhoFirst(bool);
         std::vector<Position> getSuccessors(bool);
         Position getXPos();
         Position getOPos();
