@@ -20,11 +20,8 @@ class IsolationForm : public QWidget
 public:
     explicit IsolationForm(QWidget *parent = nullptr);
     ~IsolationForm();
-
-    // the colours of the board,
-    QColor color1;
-    QColor color2;
-
+    void woodBoardColors();
+    void changeBoardColors(QColor color1, QColor color2);
 private:
     Ui::IsolationForm *ui;
     QGraphicsScene *scene;
@@ -46,6 +43,11 @@ private:
     BoardSquare boardSquares[GameSettings::boardSize][GameSettings::boardSize];
     PlayerPiece *humanPlayer;
     PlayerPiece *computerPlayer;
+
+signals:
+
+public slots:
+
 
 };
 
