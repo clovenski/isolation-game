@@ -7,3 +7,4 @@
 !/gui/ui/*.ui
 !/gui/isolation.pro
 !/gui/assets/
+!/gui/resources.qrc
