@@ -1,6 +1,9 @@
-gui/*
+/gui/*
+!/gui/include
 !/gui/include/*.h
+!/gui/src/
 !/gui/src/*.cpp
+!/gui/ui/
 !/gui/ui/*.ui
 !/gui/isolation.pro
-!/gui/assets
+!/gui/assets/
