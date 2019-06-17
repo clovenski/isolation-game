@@ -1,5 +1,5 @@
 /gui/*
-!/gui/include
+!/gui/include/
 !/gui/include/*.h
 !/gui/src/
 !/gui/src/*.cpp
