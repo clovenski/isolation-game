@@ -8,8 +8,10 @@ class Engine {
         State state;
         bool xFirst;
         std::chrono::duration<double> TIME_LIMIT;
+        int turnCount;
         int startDepth;
         double earlyStopLimit;
+        bool debugMode;
         Position getRandCompMove();
         void processTimeLimit(double);
     public:
@@ -24,6 +26,9 @@ class Engine {
          * at the top-left, other player at the bottom-right.
          */ 
         Engine(bool xFirst = true, double timeLimit = 2.0);
+
+        /* DEBUGGING FUNCTION, debug mode on when debug = true */
+        Engine(bool xFirst, double timeLimit, bool debug);
 
         /* Set who goes first; true for player X (computer) goes first,
          * false for player O (user) goes first.
@@ -50,6 +55,11 @@ class Engine {
         /* Allow the AI to think and make a move, returning the
          * position of the move the AI made.
          * 
+         * The first two calls to this function from when the
+         * Engine was instantiated return a random "smart" move,
+         * as in the AI makes a move randomly picked from the set
+         * of moves it thinks are equally good to one another.
+         * 
          * A call to this function changes the state of the game
          * according to the move the AI made, as in the AI moves
          * on the board and its new position is returned.
@@ -59,6 +69,9 @@ class Engine {
          * in the game state and a Position with -1 as its
          * row and col properties is returned; indicating an
          * invalid call to this function.
+         * 
+         * If debugMode = true, prints some debugging info to
+         * stdout.
          */
         Position getCompMove();
 
