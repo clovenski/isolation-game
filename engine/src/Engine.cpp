@@ -78,7 +78,20 @@ Position Engine::getCompMove() {
 }
 
 void Engine::movePlayer(Position pos) {
-    state.move(false, pos);
+    vector<Position> successors = state.getSuccessors(false);
+    bool validPos = false;
+    for (Position successor : successors) {
+        if (pos == successor) {
+            validPos = true;
+            break;
+        }
+    }
+    if (validPos) {
+        state.move(false, pos);
+    } else {
+        throw out_of_range("Invalid position: " + to_string(pos.row) +
+                           ", " + to_string(pos.col));
+    }
 }
 
 bool Engine::terminalState() {
@@ -91,4 +104,13 @@ string Engine::getWinner() {
 
 void Engine::reset() {
     state.reset();
+}
+
+// DEBUGGING FUNCTION
+string Engine::stateString() {
+    string result = "";
+    for (int i = 0; i < 8; i++) {
+        result += state.toString(i) + "\n";
+    }
+    return result;
 }

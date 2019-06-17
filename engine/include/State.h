@@ -54,5 +54,6 @@ class State {
         int getUtility();
         std::string getWinner();
         void reset();
+        std::string toString(int);
         std::string toString();
 };
