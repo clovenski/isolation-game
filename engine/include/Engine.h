@@ -56,9 +56,10 @@ class Engine {
          * position of the move the AI made.
          * 
          * The first two calls to this function from when the
-         * Engine was instantiated return a random "smart" move,
-         * as in the AI makes a move randomly picked from the set
-         * of moves it thinks are equally good to one another.
+         * Engine was instantiated or from the last time it was
+         * reset, return a random "smart" move, as in the AI makes
+         * a move randomly picked from a set of moves it thinks
+         * are equally good to one another.
          * 
          * A call to this function changes the state of the game
          * according to the move the AI made, as in the AI moves
