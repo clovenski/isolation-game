@@ -44,10 +44,13 @@ private:
     PlayerPiece *humanPlayer;
     PlayerPiece *computerPlayer;
 
+    Engine *ai;
+
+
 signals:
 
 public slots:
-
+    void movePlayer();
 
 };
 

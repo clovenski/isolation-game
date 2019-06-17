@@ -34,7 +34,8 @@ IsolationForm::IsolationForm(QWidget *parent) :
     // set the colours of the board
     woodBoardColors();
 
-
+    // create the ai for the computer player
+    ai = new Engine();
 
     // draw in the board squares
 //    for(auto &squareRow: boardSquares)
@@ -51,10 +52,12 @@ IsolationForm::IsolationForm(QWidget *parent) :
 //    }
 
     // add the player's pieces
-    humanPlayer = new PlayerPiece(":/images/chess-piece-images/queenwhite.png");
+    humanPlayer = new PlayerPiece(":/images/assets/queenwhite.png");
     scene->addItem(humanPlayer);
-//    connect(humanPlayer, )
-
+//    bool con = connect(humanPlayer, SIGNAL(),
+//            this, SLOT(movePlayer()));
+//    if(con)
+//        qDebug() <<"Connect worked";
 }
 
 IsolationForm::~IsolationForm()
@@ -99,4 +102,9 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
         }
         everyOther = !everyOther;
     }
+}
+
+void IsolationForm::movePlayer()
+{
+    QCursor::pos();
 }

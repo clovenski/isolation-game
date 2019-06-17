@@ -3,3 +3,4 @@ gui/*
 !gui/src/*.cpp
 !gui/ui/*.ui
 !gui/isolation.pro
+!/gui/assets
