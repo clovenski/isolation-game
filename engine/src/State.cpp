@@ -342,6 +342,16 @@ void State::reset() {
     xTurn = xTop;
 }
 
+string State::toString(int row) {
+    string result = "";
+
+    for (int j = 0; j < 7; j++) {
+        result += string(1, board[row][j]) + " ";
+    }
+
+    return result + string(1, board[row][7]);
+}
+
 string State::toString() {
     string result = "";
     int i, j;

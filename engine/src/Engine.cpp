@@ -1,4 +1,5 @@
 #include "../include/Engine.h"
+#include <iostream>
 using namespace std;
 
 Position Engine::getRandCompMove() {
@@ -31,6 +32,8 @@ void Engine::processTimeLimit(double timeLimit) {
 
 Engine::Engine(bool xFirst, double timeLimit) : state(xFirst) {
     this->xFirst = xFirst;
+    debugMode = false;
+    turnCount = 0;
     processTimeLimit(timeLimit);
 }
 
@@ -49,13 +52,20 @@ vector<Position> Engine::getChoices() {
 
 Position Engine::getCompMove() {
     if (!state.isTerminal()) {
+        chrono::high_resolution_clock::time_point startTime, endTime;
         Position compMove, bestCompMove;
         int i, bestDepth, bestUtility;
+
+        if (debugMode) {
+            startTime = chrono::high_resolution_clock::now();
+        }
 
         Minimax::timeRemaining = chrono::duration<double>(TIME_LIMIT);
         Minimax::resetTransTable();
         compMove = Minimax::search(true, state, startDepth);
         if (compMove.row == -1 || compMove.col == -1) {
+            bestDepth = 0;
+            bestUtility = 0;
             compMove = getRandCompMove();
         } else {
             bestDepth = startDepth;
@@ -71,6 +81,20 @@ Position Engine::getCompMove() {
                 }
             }
         }
+
+        if (debugMode) {
+            endTime = chrono::high_resolution_clock::now();
+            cout << "Best depth: " + bestDepth << endl;
+            cout << "Best utility: " + bestUtility << endl;
+            cout << "Transposition table size: " + Minimax::getTransTableSize() << endl;
+            cout << "Minimax run time: "
+                 << chrono::duration_cast<chrono::duration<double>>(endTime - startTime).count();
+        }
+
+        if (Minimax::random) {
+            Minimax::random = ++turnCount < 2;
+        }
+
         return compMove;
     } else {
         return {-1,-1};
@@ -78,7 +102,20 @@ Position Engine::getCompMove() {
 }
 
 void Engine::movePlayer(Position pos) {
-    state.move(false, pos);
+    vector<Position> successors = state.getSuccessors(false);
+    bool validPos = false;
+    for (Position successor : successors) {
+        if (pos == successor) {
+            validPos = true;
+            break;
+        }
+    }
+    if (validPos) {
+        state.move(false, pos);
+    } else {
+        throw out_of_range("Invalid position: " + to_string(pos.row) +
+                           ", " + to_string(pos.col));
+    }
 }
 
 bool Engine::terminalState() {
@@ -91,4 +128,18 @@ string Engine::getWinner() {
 
 void Engine::reset() {
     state.reset();
+    turnCount = 0;
+}
+
+// DEBUGGING FUNCTIONS
+Engine::Engine(bool xFirst, double timeLimit, bool debug) : Engine(xFirst, timeLimit) {
+    debugMode = debug;
+}
+
+string Engine::stateString() {
+    string result = "";
+    for (int i = 0; i < 8; i++) {
+        result += state.toString(i) + "\n";
+    }
+    return result;
 }
