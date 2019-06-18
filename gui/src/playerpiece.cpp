@@ -1,14 +1,15 @@
 #include "playerpiece.h"
 
-PlayerPiece::PlayerPiece(QString fileName)
+PlayerPiece::PlayerPiece(QGraphicsItem *parent)
+    : QGraphicsObject(parent)
 {
-    this->setPixmap(QPixmap(fileName));
-
+//    this->setPixmap(QPixmap(fileName));
+//    this->setNewPixmap(fileName);
     // set the flags to make this image click and draggable
     setClickAndDragFlags();
-
-    originalX = 100;
-    originalY = 100;
+    pixmap = new QPixmap(":/images/assets/queenblack.png");
+    originalX = 0;
+    originalY = 0;
     this->setPos(originalX, originalY);
 //    QGraphicsItem::setBoundingRegionGranularity(1);
 
@@ -17,7 +18,10 @@ PlayerPiece::PlayerPiece(QString fileName)
 
 void PlayerPiece::setNewPixmap(QString fileName)
 {
-    this->setPixmap(QPixmap(fileName));
+    pixmap = new QPixmap(fileName);
+    paint(new QPainter,
+          new const QStyleOptionGraphicsItem,
+          0);
 }
 
 void PlayerPiece::setClickAndDragFlags()
@@ -28,6 +32,22 @@ void PlayerPiece::setClickAndDragFlags()
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
     setAcceptDrops(true);
 
+}
+
+// pure virtual functions
+QRectF PlayerPiece::boundingRect() const
+{
+    return QRectF(70,70,70,70);
+}
+
+void PlayerPiece::paint(QPainter *painter,
+                        const QStyleOptionGraphicsItem *option,
+                        QWidget *widget)
+{
+    painter->drawPixmap(70,70,pixmap->width(),pixmap->height(), *pixmap);
+    qDebug() << "paint";
+//    this->setVisible(true);
+//    this->show();
 }
 
 //void PlayerPiece::mousePressEvent(QGraphicsSceneMouseEvent *event)

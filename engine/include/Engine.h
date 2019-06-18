@@ -1,3 +1,16 @@
+/*
+ * Class Engine
+ *
+ * To play the isolation game using the AI
+ * call either movePlayer or getCompMove first
+ * depending on who goes first.
+ *
+ * To start a new game, call reset().
+ * To change the settings call
+ * setWhoFirst(bool) and setTimeLimit(double)
+ * before starting again.
+ */
+
 #pragma once
 
 #include "Minimax.h"

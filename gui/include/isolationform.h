@@ -40,12 +40,17 @@ private:
         bool blocked = false;
 
     };
+    // array of the board squares, should be 8 x 8 by default
     BoardSquare boardSquares[GameSettings::boardSize][GameSettings::boardSize];
+
+    /*
+     * the pieces on the board that are controlled by
+     * the human, and computer players respectively.
+     */
     PlayerPiece *humanPlayer;
     PlayerPiece *computerPlayer;
 
     Engine *ai;
-
 
 signals:
 

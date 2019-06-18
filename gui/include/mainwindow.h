@@ -18,6 +18,7 @@ static const int height = 600;
 }
 
 namespace GameSettings {
+
 // difficulty settings
 static bool easy = false;
 static bool medium = false;
@@ -27,11 +28,12 @@ static bool hard = false;
 static bool playerFirst = false;
 static bool computerFirst = false;
 
-// scene width and height
-// must be divisble by boardSize for pixelSize
+// scene width and height, must be divisble by boardSize for pixelSize
 static const int sceneSize = 560;
+
 // boardSize x boardSize board, 8 x 8 in this case
 static const int boardSize = 8;
+
 // the pixel x pixel size of the squares in the board
 static const int pixelSize = sceneSize / boardSize;
 }
@@ -51,7 +53,7 @@ private slots:
     void on_mediumRadioButton_toggled(bool checked);
     void on_hardRadioButton_toggled(bool checked);
 
-    // toggles whos turn at the start
+    // toggles whose turn at the start
     void on_computerRadioButton_toggled(bool checked);
     void on_playerRadioButton_toggled(bool checked);
 
@@ -66,6 +68,7 @@ private:
     QGraphicsView *view;
     QGraphicsScene *scene;
 
+    // the form where the isolation game is played
     IsolationForm *isoForm;
 };
 
