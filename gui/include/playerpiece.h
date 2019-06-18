@@ -38,12 +38,12 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0) override;
-
-private:
-    QPointF mousePosition;
+protected:
 //    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void dropEvent(QGraphicsSceneDragDropEvent *event) override; // TODO unsuable?
-//    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+private:
+//    QPointF mousePosition;
 
     QPixmap *pixmap;
     qreal originalX;

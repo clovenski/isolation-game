@@ -3,25 +3,23 @@
 PlayerPiece::PlayerPiece(QGraphicsItem *parent)
     : QGraphicsObject(parent)
 {
-//    this->setPixmap(QPixmap(fileName));
-//    this->setNewPixmap(fileName);
     // set the flags to make this image click and draggable
     setClickAndDragFlags();
-    pixmap = new QPixmap(":/images/assets/queenblack.png");
-    originalX = 0;
-    originalY = 0;
-    this->setPos(originalX, originalY);
-//    QGraphicsItem::setBoundingRegionGranularity(1);
 
+    pixmap = new QPixmap(":/images/assets/queenblack.png");
+
+    originalX = this->x();
+    originalY = this->y();
+    this->setPos(originalX, originalY);
 
 }
 
 void PlayerPiece::setNewPixmap(QString fileName)
 {
     pixmap = new QPixmap(fileName);
-    paint(new QPainter,
-          new const QStyleOptionGraphicsItem,
-          0);
+//    paint(new QPainter,
+//          new const QStyleOptionGraphicsItem,
+//          0);
 }
 
 void PlayerPiece::setClickAndDragFlags()
@@ -37,23 +35,20 @@ void PlayerPiece::setClickAndDragFlags()
 // pure virtual functions
 QRectF PlayerPiece::boundingRect() const
 {
-    return QRectF(70,70,70,70);
+    // pixmap width and height should be the same as GameSettings::pixelSize
+    // and should be a square, same as the board squares.
+    return QRectF(0,0,pixmap->width(),pixmap->height());
 }
 
 void PlayerPiece::paint(QPainter *painter,
                         const QStyleOptionGraphicsItem *option,
                         QWidget *widget)
 {
-    painter->drawPixmap(70,70,pixmap->width(),pixmap->height(), *pixmap);
+    painter->drawPixmap(0,0,pixmap->width(),pixmap->height(), *pixmap);
     qDebug() << "paint";
 //    this->setVisible(true);
 //    this->show();
 }
-
-//void PlayerPiece::mousePressEvent(QGraphicsSceneMouseEvent *event)
-//{
-//    qDebug() << event->scenePos().x() << ", " << event->scenePos().y();
-//}
 
 // TODO this is never called
 void PlayerPiece::dropEvent(QGraphicsSceneDragDropEvent *event)
@@ -61,13 +56,14 @@ void PlayerPiece::dropEvent(QGraphicsSceneDragDropEvent *event)
     qDebug() << "dE";
 }
 
-// TODO returns object to orginal position when dragging
-//void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-//{
-//    setPos(event->pos());
-//    qDebug() << event->pos().x() << ", " << event->pos().y();
+void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    qDebug() << this->x() << " mRE " << this->y();
+    QGraphicsItem::mouseReleaseEvent(event);
 
-//}
+    originalX = this->x();
+    originalY = this->y();
+}
 
 // private slots
 void PlayerPiece::changePosition(QPointF point)
