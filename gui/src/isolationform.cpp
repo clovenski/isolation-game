@@ -51,14 +51,31 @@ IsolationForm::IsolationForm(QWidget *parent) :
 //        }
 //    }
 
+//    isHumanTurn = GameSettings::playerFirst;
+
     // add the player's pieces
     humanPlayer = new PlayerPiece();
-    humanPlayer->setNewPixmap(":/images/assets/queenwhite.png");
+    qDebug() << GameSettings::playerFirst; //TODO this gets false for when we want true
+    if(GameSettings::playerFirst)
+        humanPlayer->setNewPixmap(":/images/assets/queenwhite.png");
+    else
+        humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
+
     scene->addItem(humanPlayer);
-//    bool con = connect(humanPlayer, SIGNAL(),
-//            this, SLOT(movePlayer()));
-//    if(con)
-//        qDebug() <<"Connect worked";
+
+//    bool con1 = QObject::connect(humanPlayer, SIGNAL(xChanged()),
+//                        this, SLOT(movePlayer()));
+//    bool con2 = QObject::connect(humanPlayer, SIGNAL(yChanged()),
+//                        this, SLOT(movePlayer()));
+//    if(con1)
+//        qDebug() <<"Connect1 worked";
+//    if(con2)
+//        qDebug() <<"Connect2 worked";
+
+    bool con3 = QObject::connect(humanPlayer, SIGNAL(positionChanged()),
+                        this, SLOT(movePlayer()));
+    if(con3)
+        qDebug() << "Connect3 worked";
 }
 
 IsolationForm::~IsolationForm()
@@ -107,7 +124,9 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
     }
 }
 
+// public slots
+
 void IsolationForm::movePlayer()
 {
-    QCursor::pos();
+
 }

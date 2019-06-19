@@ -28,6 +28,9 @@ static bool hard = false;
 static bool playerFirst = false;
 static bool computerFirst = false;
 
+// who's turn it is currently in the game
+static bool isHumanTurn = false;
+
 // scene width and height, must be divisble by boardSize for pixelSize
 static const int sceneSize = 560;
 

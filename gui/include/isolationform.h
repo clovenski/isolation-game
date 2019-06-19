@@ -52,6 +52,8 @@ private:
 
     Engine *ai;
 
+//    bool isHumanTurn;
+
 signals:
 
 public slots:

@@ -42,17 +42,18 @@ protected:
 //    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void dropEvent(QGraphicsSceneDragDropEvent *event) override; // TODO unsuable?
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+signals:
+    void positionChanged();
+private slots:
+    void changePosition(QPointF);
+
 private:
 //    QPointF mousePosition;
 
     QPixmap *pixmap;
     qreal originalX;
     qreal originalY;
-
-signals:
-
-private slots:
-    void changePosition(QPointF);
 };
 
 #endif // PLAYERPIECE_H

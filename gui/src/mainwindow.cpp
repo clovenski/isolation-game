@@ -55,6 +55,8 @@ void MainWindow::on_startButton_clicked()
        (GameSettings::hard ? 1 : 0) == 1 &&
         GameSettings::playerFirst != GameSettings::computerFirst)
     {
+        GameSettings::isHumanTurn = GameSettings::playerFirst;
+
         QStackedWidget *stackedWidget;
         stackedWidget = new QStackedWidget();
         isoForm = new IsolationForm();
