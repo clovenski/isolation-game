@@ -2,10 +2,23 @@
 #include "ui_mainwindow.h"
 #include "isolationform.h"
 
+namespace GameSettings
+{
+bool easy = false;
+bool medium = false;
+bool hard = false;
+
+bool playerFirst = false;
+bool computerFirst = false;
+
+bool isHumanTurn = false;
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     // make the ui a fixed size
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);

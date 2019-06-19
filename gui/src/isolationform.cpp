@@ -28,6 +28,9 @@ IsolationForm::IsolationForm(QWidget *parent) :
         {
             boardSquares[i][j].x = i * GameSettings::pixelSize;
             boardSquares[i][j].y = j * GameSettings::pixelSize;
+
+            boardSquares[i][j].position.row = i;
+            boardSquares[i][j].position.col = j;
         }
     }
 
@@ -35,42 +38,20 @@ IsolationForm::IsolationForm(QWidget *parent) :
     woodBoardColors();
 
     // create the ai for the computer player
-    ai = new Engine();
-
-    // draw in the board squares
-//    for(auto &squareRow: boardSquares)
-//    {
-//        bool everyOther = false;
-//        for(auto &squareColumn: squareRow)
-//        {
-//            if(everyOther)
-//            {
-//                scene->addRect()
-//            } else {
-//            }
-//        }
-//    }
-
-//    isHumanTurn = GameSettings::playerFirst;
+    if(GameSettings::playerFirst)
+        ai = new Engine(true, 2.0);
+    else
+        ai = new Engine(false, 2.0);
 
     // add the player's pieces
     humanPlayer = new PlayerPiece();
-    qDebug() << GameSettings::playerFirst; //TODO this gets false for when we want true
+
     if(GameSettings::playerFirst)
         humanPlayer->setNewPixmap(":/images/assets/queenwhite.png");
     else
         humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
 
     scene->addItem(humanPlayer);
-
-//    bool con1 = QObject::connect(humanPlayer, SIGNAL(xChanged()),
-//                        this, SLOT(movePlayer()));
-//    bool con2 = QObject::connect(humanPlayer, SIGNAL(yChanged()),
-//                        this, SLOT(movePlayer()));
-//    if(con1)
-//        qDebug() <<"Connect1 worked";
-//    if(con2)
-//        qDebug() <<"Connect2 worked";
 
     bool con3 = QObject::connect(humanPlayer, SIGNAL(positionChanged()),
                         this, SLOT(movePlayer()));
@@ -128,5 +109,52 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
 
 void IsolationForm::movePlayer()
 {
+    // check if the player is out of bounds
+    if(humanPlayer->x() > GameSettings::sceneSize
+    || humanPlayer->y() > GameSettings::sceneSize
+    || humanPlayer->x() < -GameSettings::pixelSize
+    || humanPlayer->y() < -GameSettings::pixelSize)
+    {
+        qDebug() << "Putting to original position";
+        humanPlayer->toOriginalPosition();
+    } else {
+        // the square closest to the top left corner of the player piece image
+        // with regards to the square's top left corner
+        int closestX = GameSettings::sceneSize;
+        int closestY = GameSettings::sceneSize;
 
+        Position playerMove ={-1,-1};
+        // check if the move is inside the scene // TODO check only list of viable positions
+        for(int i = 0; i < GameSettings::boardSize; i++)
+        {
+            for(int j = 0; j < GameSettings::boardSize; j++)
+            {
+                if(abs(boardSquares[i][j].x - humanPlayer->x()) < closestX)
+                {
+                    closestX = static_cast<int>(
+                                abs(boardSquares[i][j].x - humanPlayer->x()));
+                    playerMove.row = boardSquares[i][j].position.row;
+                }
+                if(abs(boardSquares[i][j].y - humanPlayer->y()) < closestY)
+                {
+                    closestY = static_cast<int>(
+                                abs(boardSquares[i][j].y - humanPlayer->y()));
+                    playerMove.col = boardSquares[i][j].position.col;
+                }
+            }
+        }
+        // if we were able to find a viable spot, we can move there
+        if(closestX != GameSettings::sceneSize
+        || closestY != GameSettings::sceneSize)
+        {
+            humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
+                    boardSquares[playerMove.row][playerMove.col].y);
+        }
+
+        qDebug() << "closest x: " << closestX << ", closest y:" << closestY
+                << "Player's move: ("<< playerMove.row <<", "<< playerMove.col << ")";
+    }
+    // TODO see if the player is allowed to move to a square
+
+    // TODO send computer AI the move
 }

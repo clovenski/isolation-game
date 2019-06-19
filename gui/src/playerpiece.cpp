@@ -17,6 +17,8 @@ PlayerPiece::PlayerPiece(QGraphicsItem *parent)
 
     GameSettings::isHumanTurn = GameSettings::playerFirst;
 
+    qDebug() << "playerFirst" << GameSettings::playerFirst;
+    qDebug() << "isHumanTurn" << GameSettings::isHumanTurn;
     originalX = this->x();
     originalY = this->y();
 
@@ -51,9 +53,24 @@ void PlayerPiece::paint(QPainter *painter,
                         QWidget *widget)
 {
     painter->drawPixmap(0,0,pixmap->width(),pixmap->height(), *pixmap);
-//    qDebug() << "paint";
-//    this->setVisible(true);
-//    this->show();
+}
+
+void PlayerPiece::movePlayerTo(qreal x, qreal y)
+{
+    setPos(x,y);
+    originalX = x;
+    originalY = y;
+}
+
+void PlayerPiece::setupTurnTrue()
+{
+    GameSettings::isHumanTurn = true;
+    setClickAndDragFlags();
+}
+
+void PlayerPiece::toOriginalPosition()
+{
+    setPos(originalX,originalY);
 }
 
 // TODO this is never called
@@ -69,12 +86,10 @@ void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         qDebug() << this->x() << " mRE " << this->y();
         QGraphicsItem::mouseReleaseEvent(event);
 
-        originalX = this->x();
-        originalY = this->y();
+//        originalX = this->x();
+//        originalY = this->y();
 
         emit positionChanged();
-    } else {
-        GameSettings::isHumanTurn = true; //TODO remove once computer's turn logic is set
     }
 }
 

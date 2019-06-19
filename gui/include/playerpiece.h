@@ -38,6 +38,18 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0) override;
+
+    // put the player piece is it's new position
+    void movePlayerTo(qreal x, qreal y);
+
+    // Make it so that it is the human's turn now.
+    // This makes player piece image click and draggable,
+    // and GameSettings::isHumanTurn is set to true.
+    void setupTurnTrue();
+
+    // call if the playerpiece went to a non viable position
+    void toOriginalPosition();
+
 protected:
 //    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void dropEvent(QGraphicsSceneDragDropEvent *event) override; // TODO unsuable?
@@ -46,7 +58,7 @@ protected:
 signals:
     void positionChanged();
 private slots:
-    void changePosition(QPointF);
+    void changePosition(QPointF); // TODO am i using this?
 
 private:
 //    QPointF mousePosition;

@@ -14,31 +14,29 @@ namespace Ui {
 class MainWindow;
 static const int width = 800;
 static const int height = 600;
-
 }
 
 namespace GameSettings {
-
 // difficulty settings
-static bool easy = false;
-static bool medium = false;
-static bool hard = false;
+extern bool easy;
+extern bool medium;
+extern bool hard;
 
 // whos turn it is at the start
-static bool playerFirst = false;
-static bool computerFirst = false;
+extern bool playerFirst;
+extern bool computerFirst;
 
 // who's turn it is currently in the game
-static bool isHumanTurn = false;
+extern bool isHumanTurn;
 
 // scene width and height, must be divisble by boardSize for pixelSize
-static const int sceneSize = 560;
+const int sceneSize = 560;
 
 // boardSize x boardSize board, 8 x 8 in this case
-static const int boardSize = 8;
+const int boardSize = 8;
 
 // the pixel x pixel size of the squares in the board
-static const int pixelSize = sceneSize / boardSize;
+const int pixelSize = sceneSize / boardSize;
 }
 
 class MainWindow : public QMainWindow
