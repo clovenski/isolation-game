@@ -23,6 +23,7 @@ public:
     ~IsolationForm();
     void woodBoardColors();
     void changeBoardColors(QColor color1, QColor color2);
+    void startGame();
 private:
     Ui::IsolationForm *ui;
     QGraphicsScene *scene;
@@ -33,6 +34,9 @@ private:
         // the x and y position of the board from the top left point
         int x;
         int y;
+
+        // pointer to the rectangle that is inside the scene
+        QGraphicsRectItem *rect;
 
         // the position in the game board as well as boardSquares array.
         Position position;

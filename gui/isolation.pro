@@ -35,7 +35,6 @@ SOURCES += \
 
 HEADERS += \
     include/isolationform.h \
-    include/isolationgame.h \
     include/mainwindow.h \
     include/playerpiece.h \
     ../engine/include/Engine.h \

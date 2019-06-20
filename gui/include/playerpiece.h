@@ -39,6 +39,7 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0) override;
 
+    // call this when setting up beginning positions
     // put the player piece is it's new position
     void movePlayerTo(qreal x, qreal y);
 
@@ -50,9 +51,10 @@ public:
     // call if the playerpiece went to a non viable position
     void toOriginalPosition();
 
+    qreal originalX;
+    qreal originalY;
+
 protected:
-//    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void dropEvent(QGraphicsSceneDragDropEvent *event) override; // TODO unsuable?
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 signals:
@@ -64,8 +66,7 @@ private:
 //    QPointF mousePosition;
 
     QPixmap *pixmap;
-    qreal originalX;
-    qreal originalY;
+
 };
 
 #endif // PLAYERPIECE_H

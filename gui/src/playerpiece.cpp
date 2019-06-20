@@ -10,7 +10,7 @@ PlayerPiece::PlayerPiece(QGraphicsItem *parent)
     if(GameSettings::playerFirst)
     {
         pixmap = new QPixmap(":/images/assets/queenwhite.png");
-        setClickAndDragFlags();
+        setupTurnTrue();
     } else {
         pixmap = new QPixmap(":/images/assets/queenblack.png");
     }
@@ -55,6 +55,8 @@ void PlayerPiece::paint(QPainter *painter,
     painter->drawPixmap(0,0,pixmap->width(),pixmap->height(), *pixmap);
 }
 
+// move the player to another position
+// call this when setting up beginning positions
 void PlayerPiece::movePlayerTo(qreal x, qreal y)
 {
     setPos(x,y);
@@ -71,12 +73,6 @@ void PlayerPiece::setupTurnTrue()
 void PlayerPiece::toOriginalPosition()
 {
     setPos(originalX,originalY);
-}
-
-// TODO this is never called
-void PlayerPiece::dropEvent(QGraphicsSceneDragDropEvent *event)
-{
-    qDebug() << "dE";
 }
 
 void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

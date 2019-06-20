@@ -37,19 +37,22 @@ IsolationForm::IsolationForm(QWidget *parent) :
     // set the colours of the board
     woodBoardColors();
 
-    // create the ai for the computer player
-    if(GameSettings::playerFirst)
-        ai = new Engine(true, 2.0);
-    else
-        ai = new Engine(false, 2.0);
-
-    // add the player's pieces
+    // add the human player's pieces
     humanPlayer = new PlayerPiece();
 
+    // create the ai for the computer player, set player images,
+    // and set their posiitons based on who's first
     if(GameSettings::playerFirst)
+    {
+        ai = new Engine(true, 2.0);
         humanPlayer->setNewPixmap(":/images/assets/queenwhite.png");
-    else
+        humanPlayer->movePlayerTo(0,0);
+    } else {
+        ai = new Engine(false, 2.0);
         humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
+        humanPlayer->movePlayerTo(GameSettings::sceneSize - GameSettings::pixelSize,
+                                  GameSettings::sceneSize - GameSettings::pixelSize);
+    }
 
     scene->addItem(humanPlayer);
 
@@ -57,6 +60,8 @@ IsolationForm::IsolationForm(QWidget *parent) :
                         this, SLOT(movePlayer()));
     if(con3)
         qDebug() << "Connect3 worked";
+
+//    startGame(); // TODO Crashes once start button in mainwindow.ui is pressed
 }
 
 IsolationForm::~IsolationForm()
@@ -91,11 +96,11 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
         {
             if(everyOther)
             {
-                scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
+                boardSquares[i][j].rect = scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
                                GameSettings::pixelSize, GameSettings::pixelSize,
                                QPen(color1), brush1);
             } else {
-                scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
+                boardSquares[i][j].rect = scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
                                GameSettings::pixelSize, GameSettings::pixelSize,
                                QPen(color2), brush2);
             }
@@ -103,6 +108,22 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
         }
         everyOther = !everyOther;
     }
+}
+
+void IsolationForm::startGame()
+{
+    Position aiMove;
+    while(!ai->terminalState())
+    {
+        if(GameSettings::isHumanTurn)
+        {
+            // wait for player piece to get the human's turn
+        } else {
+            aiMove = ai->getCompMove();
+            GameSettings::isHumanTurn = true;
+        }
+    }
+    qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
 }
 
 // public slots
@@ -118,6 +139,16 @@ void IsolationForm::movePlayer()
         qDebug() << "Putting to original position";
         humanPlayer->toOriginalPosition();
     } else {
+
+        // Make original position blocked off, and show it visually
+        boardSquares[static_cast<int>(humanPlayer->originalX) / GameSettings::pixelSize]
+                    [static_cast<int>(humanPlayer->originalY) / GameSettings::pixelSize]
+                    .blocked = true;
+        delete boardSquares[static_cast<int>(humanPlayer->originalX) / GameSettings::pixelSize]
+                           [static_cast<int>(humanPlayer->originalY) / GameSettings::pixelSize]
+                           .rect;
+
+
         // the square closest to the top left corner of the player piece image
         // with regards to the square's top left corner
         int closestX = GameSettings::sceneSize;
@@ -134,21 +165,30 @@ void IsolationForm::movePlayer()
                     closestX = static_cast<int>(
                                 abs(boardSquares[i][j].x - humanPlayer->x()));
                     playerMove.row = boardSquares[i][j].position.row;
+                    qDebug() << "d1";
                 }
                 if(abs(boardSquares[i][j].y - humanPlayer->y()) < closestY)
                 {
                     closestY = static_cast<int>(
                                 abs(boardSquares[i][j].y - humanPlayer->y()));
                     playerMove.col = boardSquares[i][j].position.col;
+                    qDebug() << "d2";
                 }
             }
         }
+
+        qDebug() << "d3";
         // if we were able to find a viable spot, we can move there
-        if(closestX != GameSettings::sceneSize
-        || closestY != GameSettings::sceneSize)
+        if(playerMove.row != -1 && playerMove.col != -1)
         {
+            qDebug() << "d4";
             humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
                     boardSquares[playerMove.row][playerMove.col].y);
+            qDebug() << "d5";
+            // send the ai the human player's move
+            ai->movePlayer(playerMove);
+            GameSettings::isHumanTurn = false;
+            qDebug() << "d6";
         }
 
         qDebug() << "closest x: " << closestX << ", closest y:" << closestY
@@ -156,5 +196,20 @@ void IsolationForm::movePlayer()
     }
     // TODO see if the player is allowed to move to a square
 
-    // TODO send computer AI the move
 }
+
+// TODO, errors
+/*
+ * Invalid parameter passed to C runtime function.
+ * Invalid parameter passed to C runtime function.
+ * terminate called after throwing an instance of 'std::out_of_range'
+ * what():  Invalid position: 0, 1
+ *
+ * Invalid parameter passed to C runtime function.
+ * Invalid parameter passed to C runtime function.
+ * terminate called after throwing an instance of 'std::out_of_range'
+ * what():  Invalid position: 2, 3
+ *
+ * after releasing player piece in the scene
+ * between d5 and d6, qDebug() outputs
+ */
