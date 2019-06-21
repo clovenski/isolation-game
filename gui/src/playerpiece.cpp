@@ -75,6 +75,16 @@ void PlayerPiece::toOriginalPosition()
     setPos(originalX,originalY);
 }
 
+qreal PlayerPiece::getOriginalX()
+{
+    return originalX;
+}
+
+qreal PlayerPiece::getOriginalY()
+{
+    return originalY;
+}
+
 void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if(GameSettings::isHumanTurn)
@@ -86,6 +96,9 @@ void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //        originalY = this->y();
 
         emit positionChanged();
+    } else
+    {
+        toOriginalPosition();
     }
 }
 

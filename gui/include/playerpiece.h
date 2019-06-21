@@ -51,10 +51,14 @@ public:
     // call if the playerpiece went to a non viable position
     void toOriginalPosition();
 
-    qreal originalX;
-    qreal originalY;
+    // get the original coordinates, original x and y shouldn't
+    // be overwritten by anything but playerpiece
+    qreal getOriginalX();
+    qreal getOriginalY();
 
 protected:
+    // TODO Optional, center the image on the mouse, and then let it be moved
+//    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 signals:
@@ -63,10 +67,9 @@ private slots:
     void changePosition(QPointF); // TODO am i using this?
 
 private:
-//    QPointF mousePosition;
-
     QPixmap *pixmap;
-
+    qreal originalX;
+    qreal originalY;
 };
 
 #endif // PLAYERPIECE_H

@@ -120,6 +120,7 @@ void IsolationForm::startGame()
             // wait for player piece to get the human's turn
         } else {
             aiMove = ai->getCompMove();
+            qDebug() << "Computer Move: " << aiMove.row << ", "<< aiMove.col;
             GameSettings::isHumanTurn = true;
         }
     }
@@ -139,23 +140,14 @@ void IsolationForm::movePlayer()
         qDebug() << "Putting to original position";
         humanPlayer->toOriginalPosition();
     } else {
-
-        // Make original position blocked off, and show it visually
-        boardSquares[static_cast<int>(humanPlayer->originalX) / GameSettings::pixelSize]
-                    [static_cast<int>(humanPlayer->originalY) / GameSettings::pixelSize]
-                    .blocked = true;
-        delete boardSquares[static_cast<int>(humanPlayer->originalX) / GameSettings::pixelSize]
-                           [static_cast<int>(humanPlayer->originalY) / GameSettings::pixelSize]
-                           .rect;
-
-
         // the square closest to the top left corner of the player piece image
         // with regards to the square's top left corner
         int closestX = GameSettings::sceneSize;
         int closestY = GameSettings::sceneSize;
 
         Position playerMove ={-1,-1};
-        // check if the move is inside the scene // TODO check only list of viable positions
+        // finds the position closest to where the player wants to move based off
+        // of the pixelsand makes that their movement choice.
         for(int i = 0; i < GameSettings::boardSize; i++)
         {
             for(int j = 0; j < GameSettings::boardSize; j++)
@@ -177,39 +169,34 @@ void IsolationForm::movePlayer()
             }
         }
 
-        qDebug() << "d3";
-        // if we were able to find a viable spot, we can move there
-        if(playerMove.row != -1 && playerMove.col != -1)
+        // vector of viable choices for the human player, not ai player
+        std::vector<Position> choices = ai->getChoices();
+
+        // tries out if the position the human decided on is a viable position.
+        // if not, return.
+        // TODO, is never valid move
+        try
         {
-            qDebug() << "d4";
-            humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
-                    boardSquares[playerMove.row][playerMove.col].y);
-            qDebug() << "d5";
-            // send the ai the human player's move
             ai->movePlayer(playerMove);
-            GameSettings::isHumanTurn = false;
-            qDebug() << "d6";
+        } catch(const std::out_of_range e)
+        {
+            qDebug() << "Invalid Move.";
+            humanPlayer->toOriginalPosition();
+            return;
         }
 
-        qDebug() << "closest x: " << closestX << ", closest y:" << closestY
-                << "Player's move: ("<< playerMove.row <<", "<< playerMove.col << ")";
+        qDebug() << "d3";
+        // Make original position blocked off, and show it visually
+        boardSquares[static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize]
+                    [static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize]
+                    .blocked = true;
+        delete boardSquares[static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize]
+                           [static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize]
+                           .rect;
+        // Moves the player and changes the original position coordinates.
+        humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
+                boardSquares[playerMove.row][playerMove.col].y);
+
+        GameSettings::isHumanTurn = false;
     }
-    // TODO see if the player is allowed to move to a square
-
 }
-
-// TODO, errors
-/*
- * Invalid parameter passed to C runtime function.
- * Invalid parameter passed to C runtime function.
- * terminate called after throwing an instance of 'std::out_of_range'
- * what():  Invalid position: 0, 1
- *
- * Invalid parameter passed to C runtime function.
- * Invalid parameter passed to C runtime function.
- * terminate called after throwing an instance of 'std::out_of_range'
- * what():  Invalid position: 2, 3
- *
- * after releasing player piece in the scene
- * between d5 and d6, qDebug() outputs
- */
