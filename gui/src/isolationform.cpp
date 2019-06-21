@@ -133,7 +133,11 @@ void IsolationForm::startGame()
             deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
                               static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
             aiMove = ai->getCompMove();
-            qDebug() << QString::fromStdString(ai->stateString());
+            qDebug().noquote() << QString::fromStdString(ai->stateString())
+                               << QString::fromStdString("Best depth: " + ai->debugCompMove("depth") + "\n")
+                               << QString::fromStdString("Best utility: " + ai->debugCompMove("utility") + "\n")
+                               << QString::fromStdString("Table size: " + ai->debugCompMove("table size") + "\n")
+                               << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
             aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
                             aiMove.row * GameSettings::pixelSize);
 //            deleteBoardSquare(aiMove.row, aiMove.col);

@@ -27,9 +27,13 @@ class Engine {
         int turnCount;
         int startDepth;
         double earlyStopLimit;
-        bool debugMode;
         Position getRandCompMove();
         void processTimeLimit(double);
+        // debugging fields
+        int bestDepth;
+        int bestUtility;
+        int transTableSize;
+        double minimaxRunTime;
     public:
         /* Construct a new engine.
          *      bool - whether or not player X (computer) goes first
@@ -42,9 +46,6 @@ class Engine {
          * at the top-left, other player at the bottom-right.
          */ 
         Engine(bool xFirst = true, double timeLimit = 2.0);
-
-        /* DEBUGGING FUNCTION, debug mode on when debug = true */
-        Engine(bool xFirst, double timeLimit, bool debug);
 
         /* Set who goes first; true for player X (computer) goes first,
          * false for player O (user) goes first.
@@ -135,4 +136,15 @@ class Engine {
          * state are synchronized.
          */
         std::string stateString();
+
+        /* DEBUGGING FUNCTION
+         * 
+         * Returns debugging information about the latest call to 
+         * Engine.getCompMove(). The information returned depends
+         * on the given string.
+         * If an invalid key is given, an empty string is returned.
+         * 
+         * Valid keys: "depth", "utility", "table size", "run time"
+         */
+        std::string debugCompMove(std::string);
 };

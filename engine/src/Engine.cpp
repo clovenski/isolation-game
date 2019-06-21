@@ -32,9 +32,12 @@ void Engine::processTimeLimit(double timeLimit) {
 
 Engine::Engine(bool xFirst, double timeLimit) : state(xFirst) {
     this->xFirst = xFirst;
-    debugMode = false;
     turnCount = 0;
     processTimeLimit(timeLimit);
+
+    // init debugging fields
+    bestDepth = bestUtility = transTableSize = 0;
+    minimaxRunTime = 0.0;
 }
 
 void Engine::setWhoFirst(bool xFirst) {
@@ -54,11 +57,9 @@ Position Engine::getCompMove() {
     if (!state.isTerminal()) {
         chrono::high_resolution_clock::time_point startTime, endTime;
         Position compMove, bestCompMove;
-        int i, bestDepth, bestUtility;
+        int i;
 
-        if (debugMode) {
-            startTime = chrono::high_resolution_clock::now();
-        }
+        startTime = chrono::high_resolution_clock::now();
 
         Minimax::timeRemaining = chrono::duration<double>(TIME_LIMIT);
         Minimax::resetTransTable();
@@ -82,14 +83,9 @@ Position Engine::getCompMove() {
             }
         }
 
-        if (debugMode) {
-            endTime = chrono::high_resolution_clock::now();
-            cout << "Best depth: " + bestDepth << endl;
-            cout << "Best utility: " + bestUtility << endl;
-            cout << "Transposition table size: " + Minimax::getTransTableSize() << endl;
-            cout << "Minimax run time: "
-                 << chrono::duration_cast<chrono::duration<double>>(endTime - startTime).count();
-        }
+        transTableSize = Minimax::getTransTableSize();
+        endTime = chrono::high_resolution_clock::now();
+        minimaxRunTime = chrono::duration_cast<chrono::duration<double>>(endTime - startTime).count();
 
         if (Minimax::random) {
             Minimax::random = ++turnCount < 2;
@@ -141,9 +137,6 @@ void Engine::reset() {
 }
 
 // DEBUGGING FUNCTIONS
-Engine::Engine(bool xFirst, double timeLimit, bool debug) : Engine(xFirst, timeLimit) {
-    debugMode = debug;
-}
 
 string Engine::stateString() {
     string result = "";
@@ -151,4 +144,18 @@ string Engine::stateString() {
         result += state.toString(i) + "\n";
     }
     return result;
+}
+
+string Engine::debugCompMove(string key) {
+    if (key == "depth") {
+        return to_string(bestDepth);
+    } else if (key == "utility") {
+        return to_string(bestUtility);
+    } else if (key == "table size") {
+        return to_string(transTableSize);
+    } else if (key == "run time") {
+        return to_string(minimaxRunTime);
+    } else {
+        return "";
+    }
 }
