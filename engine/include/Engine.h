@@ -9,6 +9,9 @@
  * To change the settings call
  * setWhoFirst(bool) and setTimeLimit(double)
  * before starting again.
+ *
+ * Rows and Columns are in rows and colums,
+ * not x and y cartesian coordinates.
  */
 
 #pragma once

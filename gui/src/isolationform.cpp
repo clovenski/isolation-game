@@ -26,11 +26,8 @@ IsolationForm::IsolationForm(QWidget *parent) :
     {
         for(int j = 0; j < GameSettings::boardSize; j++)
         {
-            boardSquares[i][j].x = i * GameSettings::pixelSize;
-            boardSquares[i][j].y = j * GameSettings::pixelSize;
-
-            boardSquares[i][j].position.row = i;
-            boardSquares[i][j].position.col = j;
+            boardSquares[i][j].x = j * GameSettings::pixelSize;
+            boardSquares[i][j].y = i * GameSettings::pixelSize;
         }
     }
 
@@ -44,24 +41,33 @@ IsolationForm::IsolationForm(QWidget *parent) :
     // and set their posiitons based on who's first
     if(GameSettings::playerFirst)
     {
-        ai = new Engine(true, 2.0);
+        ai = new Engine(false, 2.0);
         humanPlayer->setNewPixmap(":/images/assets/queenwhite.png");
         humanPlayer->movePlayerTo(0,0);
+        aiPiece = new AiPiece();
+        aiPiece->setPos(GameSettings::sceneSize - GameSettings::pixelSize,
+                        GameSettings::sceneSize - GameSettings::pixelSize);
     } else {
-        ai = new Engine(false, 2.0);
+        ai = new Engine(true, 2.0);
         humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
         humanPlayer->movePlayerTo(GameSettings::sceneSize - GameSettings::pixelSize,
                                   GameSettings::sceneSize - GameSettings::pixelSize);
+        aiPiece = new AiPiece();
+        aiPiece->setPos(0,0);
     }
 
+    // add the graphics items to the scene
     scene->addItem(humanPlayer);
+    scene->addItem(aiPiece);
 
+    bool con2 = QObject::connect(humanPlayer, SIGNAL(positionChanged()),
+                                 this, SLOT(movePlayer()));
     bool con3 = QObject::connect(humanPlayer, SIGNAL(positionChanged()),
-                        this, SLOT(movePlayer()));
+                                 &loop, SLOT(quit()));
+    if(con2)
+        qDebug() << "Connect2 worked";
     if(con3)
         qDebug() << "Connect3 worked";
-
-//    startGame(); // TODO Crashes once start button in mainwindow.ui is pressed
 }
 
 IsolationForm::~IsolationForm()
@@ -113,18 +119,33 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
 void IsolationForm::startGame()
 {
     Position aiMove;
+
     while(!ai->terminalState())
     {
+        qDebug() << "a2";
         if(GameSettings::isHumanTurn)
         {
-            // wait for player piece to get the human's turn
+            loop.exec();
         } else {
+            qDebug() << "a3";
+            deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
+                              static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
             aiMove = ai->getCompMove();
-            qDebug() << "Computer Move: " << aiMove.row << ", "<< aiMove.col;
+            qDebug() << QString::fromStdString(ai->stateString());
+            aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
+                            aiMove.row * GameSettings::pixelSize);
+//            deleteBoardSquare(aiMove.row, aiMove.col);
+            qDebug() << "Computer Move: " << aiMove.col << ", "<< aiMove.row;
             GameSettings::isHumanTurn = true;
         }
     }
     qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
+}
+
+void IsolationForm::deleteBoardSquare(int i, int j)
+{
+    boardSquares[i][j].blocked = true;
+    delete boardSquares[i][j].rect;
 }
 
 // public slots
@@ -134,47 +155,27 @@ void IsolationForm::movePlayer()
     // check if the player is out of bounds
     if(humanPlayer->x() > GameSettings::sceneSize
     || humanPlayer->y() > GameSettings::sceneSize
-    || humanPlayer->x() < -GameSettings::pixelSize
-    || humanPlayer->y() < -GameSettings::pixelSize)
+    || humanPlayer->x() < -GameSettings::pixelSize / 2
+    || humanPlayer->y() < -GameSettings::pixelSize / 2)
     {
         qDebug() << "Putting to original position";
         humanPlayer->toOriginalPosition();
     } else {
-        // the square closest to the top left corner of the player piece image
-        // with regards to the square's top left corner
-        int closestX = GameSettings::sceneSize;
-        int closestY = GameSettings::sceneSize;
-
         Position playerMove ={-1,-1};
+
         // finds the position closest to where the player wants to move based off
         // of the pixelsand makes that their movement choice.
-        for(int i = 0; i < GameSettings::boardSize; i++)
-        {
-            for(int j = 0; j < GameSettings::boardSize; j++)
-            {
-                if(abs(boardSquares[i][j].x - humanPlayer->x()) < closestX)
-                {
-                    closestX = static_cast<int>(
-                                abs(boardSquares[i][j].x - humanPlayer->x()));
-                    playerMove.row = boardSquares[i][j].position.row;
-                    qDebug() << "d1";
-                }
-                if(abs(boardSquares[i][j].y - humanPlayer->y()) < closestY)
-                {
-                    closestY = static_cast<int>(
-                                abs(boardSquares[i][j].y - humanPlayer->y()));
-                    playerMove.col = boardSquares[i][j].position.col;
-                    qDebug() << "d2";
-                }
-            }
-        }
+        int divider = GameSettings::sceneSize / 8;
+        playerMove.row = (humanPlayer->y() + (GameSettings::pixelSize / 2)) / divider;
+        playerMove.col = (humanPlayer->x() + (GameSettings::pixelSize / 2)) / divider;
+
+        qDebug().noquote() << "Player's move: "<<playerMove.col << ", "<< playerMove.row;
 
         // vector of viable choices for the human player, not ai player
         std::vector<Position> choices = ai->getChoices();
 
         // tries out if the position the human decided on is a viable position.
         // if not, return.
-        // TODO, is never valid move
         try
         {
             ai->movePlayer(playerMove);
@@ -187,16 +188,15 @@ void IsolationForm::movePlayer()
 
         qDebug() << "d3";
         // Make original position blocked off, and show it visually
-        boardSquares[static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize]
-                    [static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize]
-                    .blocked = true;
-        delete boardSquares[static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize]
-                           [static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize]
-                           .rect;
+        deleteBoardSquare(static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize,
+                    static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize);
+
         // Moves the player and changes the original position coordinates.
         humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
                 boardSquares[playerMove.row][playerMove.col].y);
 
         GameSettings::isHumanTurn = false;
+
+        loop.exit();
     }
 }

@@ -75,5 +75,6 @@ void MainWindow::on_startButton_clicked()
         isoForm = new IsolationForm();
         stackedWidget->addWidget(isoForm);
         this->setCentralWidget(stackedWidget);
+        isoForm->startGame();
     }
 }

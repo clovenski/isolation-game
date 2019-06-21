@@ -8,6 +8,7 @@
  * Contains everything needed for the piece that represents the
  * human player and computer player.
  */
+
 #include <QGraphicsObject>
 #include <QObject>
 #include <QGraphicsPixmapItem>
@@ -33,11 +34,7 @@ public:
     // set the flags to make this object click and draggable
     void setClickAndDragFlags();
 
-    // overriding pure virtual functions
-    QRectF boundingRect() const override;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0) override;
+
 
     // call this when setting up beginning positions
     // put the player piece is it's new position
@@ -61,6 +58,11 @@ protected:
 //    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
+    // overriding pure virtual functions
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0) override;
 signals:
     void positionChanged();
 private slots:

@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    src/aipiece.cpp \
     src/isolationform.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
@@ -34,6 +35,8 @@ SOURCES += \
     ../engine/src/State.cpp
 
 HEADERS += \
+    ../aipiece.h \
+    include/aipiece.h \
     include/isolationform.h \
     include/mainwindow.h \
     include/playerpiece.h \

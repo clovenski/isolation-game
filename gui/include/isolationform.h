@@ -4,11 +4,14 @@
 #include "Engine.h"
 #include "mainwindow.h"
 #include "playerpiece.h"
+#include "aipiece.h"
 
 #include <stdlib.h>
 #include <QWidget>
 #include <QBrush>
 #include <QColor>
+#include <QGraphicsObject>
+#include <QEventLoop>
 
 namespace Ui {
 class IsolationForm;
@@ -24,6 +27,7 @@ public:
     void woodBoardColors();
     void changeBoardColors(QColor color1, QColor color2);
     void startGame();
+
 private:
     Ui::IsolationForm *ui;
     QGraphicsScene *scene;
@@ -58,9 +62,14 @@ private:
 
     Engine *ai;
 
+    AiPiece *aiPiece = new AiPiece();
+    QEventLoop loop;
+
 //    bool isHumanTurn;
+    void deleteBoardSquare(int i, int j);
 
 signals:
+    void playerMadeMove();
 
 public slots:
     void movePlayer();

@@ -39,22 +39,6 @@ void PlayerPiece::setClickAndDragFlags()
 
 }
 
-// pure virtual functions
-
-QRectF PlayerPiece::boundingRect() const
-{
-    // pixmap width and height should be the same as GameSettings::pixelSize
-    // and should be a square, same as the board squares.
-    return QRectF(0,0,pixmap->width(),pixmap->height());
-}
-
-void PlayerPiece::paint(QPainter *painter,
-                        const QStyleOptionGraphicsItem *option,
-                        QWidget *widget)
-{
-    painter->drawPixmap(0,0,pixmap->width(),pixmap->height(), *pixmap);
-}
-
 // move the player to another position
 // call this when setting up beginning positions
 void PlayerPiece::movePlayerTo(qreal x, qreal y)
@@ -100,6 +84,22 @@ void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         toOriginalPosition();
     }
+}
+
+// pure virtual functions
+
+QRectF PlayerPiece::boundingRect() const
+{
+    // pixmap width and height should be the same as GameSettings::pixelSize
+    // and should be a square, same as the board squares.
+    return QRectF(0,0,pixmap->width(),pixmap->height());
+}
+
+void PlayerPiece::paint(QPainter *painter,
+                        const QStyleOptionGraphicsItem *option,
+                        QWidget *widget)
+{
+    painter->drawPixmap(0,0,pixmap->width(),pixmap->height(), *pixmap);
 }
 
 // private slots
