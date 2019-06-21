@@ -71,6 +71,8 @@ private:
 
     // the form where the isolation game is played
     IsolationForm *isoForm;
+
+    void closeEvent(QCloseEvent *);
 };
 
 #endif // MAINWINDOW_H

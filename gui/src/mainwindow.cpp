@@ -78,3 +78,9 @@ void MainWindow::on_startButton_clicked()
         isoForm->startGame();
     }
 }
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    isoForm->done = true;
+    delete this;
+}

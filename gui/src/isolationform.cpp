@@ -68,6 +68,8 @@ IsolationForm::IsolationForm(QWidget *parent) :
         qDebug() << "Connect2 worked";
     if(con3)
         qDebug() << "Connect3 worked";
+
+    done = false;
 }
 
 IsolationForm::~IsolationForm()
@@ -120,7 +122,7 @@ void IsolationForm::startGame()
 {
     Position aiMove;
 
-    while(!ai->terminalState())
+    while(!ai->terminalState() && !done)
     {
         qDebug() << "a2";
         if(GameSettings::isHumanTurn)
