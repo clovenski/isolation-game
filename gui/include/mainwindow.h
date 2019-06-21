@@ -71,6 +71,7 @@ private:
 
     // the form where the isolation game is played
     IsolationForm *isoForm;
+    bool isoFormCreated;
 
     void closeEvent(QCloseEvent *);
 };

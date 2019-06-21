@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // make the ui a fixed size
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);
+    isoFormCreated = false;
 }
 
 MainWindow::~MainWindow()
@@ -73,6 +74,7 @@ void MainWindow::on_startButton_clicked()
         QStackedWidget *stackedWidget;
         stackedWidget = new QStackedWidget();
         isoForm = new IsolationForm();
+        isoFormCreated = true;
         stackedWidget->addWidget(isoForm);
         this->setCentralWidget(stackedWidget);
         isoForm->startGame();
@@ -81,5 +83,6 @@ void MainWindow::on_startButton_clicked()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    isoForm->done = true;
+    if(isoFormCreated)
+        isoForm->done = true;
 }

@@ -17,8 +17,6 @@ PlayerPiece::PlayerPiece(QGraphicsItem *parent)
 
     GameSettings::isHumanTurn = GameSettings::playerFirst;
 
-    qDebug() << "playerFirst" << GameSettings::playerFirst;
-    qDebug() << "isHumanTurn" << GameSettings::isHumanTurn;
     originalX = this->x();
     originalY = this->y();
 
@@ -43,9 +41,12 @@ void PlayerPiece::setClickAndDragFlags()
 // call this when setting up beginning positions
 void PlayerPiece::movePlayerTo(qreal x, qreal y)
 {
-    setPos(x,y);
+    setPos(x, y);
+//    this->paint(new QPainter, new QStyleOptionGraphicsItem, new QWidget);
+//    update(boundingRect());
     originalX = x;
     originalY = y;
+    emit playerIsDrawn();
 }
 
 void PlayerPiece::setupTurnTrue()
@@ -56,7 +57,7 @@ void PlayerPiece::setupTurnTrue()
 
 void PlayerPiece::toOriginalPosition()
 {
-    setPos(originalX,originalY);
+    setPos(originalX, originalY);
 }
 
 qreal PlayerPiece::getOriginalX()
@@ -67,6 +68,14 @@ qreal PlayerPiece::getOriginalX()
 qreal PlayerPiece::getOriginalY()
 {
     return originalY;
+}
+
+void PlayerPiece::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+//    if(GameSettings::isHumanTurn) {
+//        setPos(QCursor::pos());
+//        update(boundingRect());
+//    }
 }
 
 void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

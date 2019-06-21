@@ -5,11 +5,11 @@ AiPiece::AiPiece()
     if(GameSettings::playerFirst)
     {
         pixmap = new QPixmap(":/images/assets/queenblack.png");
-//        setPos(GameSettings::sceneSize - GameSettings::pixelSize,
-//               GameSettings::sceneSize - GameSettings::pixelSize);
-    } else
-    {
-        pixmap = new QPixmap("qrc:/images/assets/queenwhite.png");
+        setPos(GameSettings::sceneSize - GameSettings::pixelSize,
+               GameSettings::sceneSize - GameSettings::pixelSize);
+    } else {
+        pixmap = new QPixmap(":/images/assets/queenwhite.png");
+        setPos(0,0);
     }
 }
 

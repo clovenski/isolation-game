@@ -124,9 +124,9 @@ void IsolationForm::startGame()
 
     while(!ai->terminalState() && !done)
     {
-        qDebug() << "a2";
         if(GameSettings::isHumanTurn)
         {
+            qDebug() << "foo";
             loop.exec();
         } else {
             qDebug() << "a3";
@@ -142,8 +142,11 @@ void IsolationForm::startGame()
                             aiMove.row * GameSettings::pixelSize);
 //            deleteBoardSquare(aiMove.row, aiMove.col);
             qDebug() << "Computer Move: " << aiMove.col << ", "<< aiMove.row;
-            GameSettings::isHumanTurn = true;
+            humanPlayer->setupTurnTrue();
         }
+
+//        if(loop == nullptr)
+//            return;
     }
     qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
 }
@@ -170,7 +173,7 @@ void IsolationForm::movePlayer()
         Position playerMove ={-1,-1};
 
         // finds the position closest to where the player wants to move based off
-        // of the pixelsand makes that their movement choice.
+        // of the pixels and makes that their movement choice.
         int divider = GameSettings::sceneSize / 8;
         playerMove.row = (humanPlayer->y() + (GameSettings::pixelSize / 2)) / divider;
         playerMove.col = (humanPlayer->x() + (GameSettings::pixelSize / 2)) / divider;
@@ -178,31 +181,30 @@ void IsolationForm::movePlayer()
         qDebug().noquote() << "Player's move: "<<playerMove.col << ", "<< playerMove.row;
 
         // vector of viable choices for the human player, not ai player
-        std::vector<Position> choices = ai->getChoices();
+//        std::vector<Position> choices = ai->getChoices();
 
         // tries out if the position the human decided on is a viable position.
         // if not, return.
         try
         {
             ai->movePlayer(playerMove);
+            // Make original position blocked off, and show it visually
+            deleteBoardSquare(static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize,
+                        static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize);
+            qDebug() << "X: " << boardSquares[playerMove.row][playerMove.col].x
+                     << " Y: " << boardSquares[playerMove.row][playerMove.col].y;
+            // Moves the player and changes the original position coordinates.
+            humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
+                                      boardSquares[playerMove.row][playerMove.col].y);
+
+            GameSettings::isHumanTurn = false;
+
+            loop.exit();
         } catch(const std::out_of_range e)
         {
             qDebug() << "Invalid Move.";
             humanPlayer->toOriginalPosition();
             return;
         }
-
-        qDebug() << "d3";
-        // Make original position blocked off, and show it visually
-        deleteBoardSquare(static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize,
-                    static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize);
-
-        // Moves the player and changes the original position coordinates.
-        humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
-                boardSquares[playerMove.row][playerMove.col].y);
-
-        GameSettings::isHumanTurn = false;
-
-        loop.exit();
     }
 }

@@ -54,8 +54,7 @@ public:
     qreal getOriginalY();
 
 protected:
-    // TODO Optional, center the image on the mouse, and then let it be moved
-//    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     // overriding pure virtual functions
@@ -65,6 +64,8 @@ protected:
                QWidget *widget = 0) override;
 signals:
     void positionChanged();
+    void playerIsDrawn();
+
 private slots:
     void changePosition(QPointF); // TODO am i using this?
 
