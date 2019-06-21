@@ -125,7 +125,14 @@ bool Engine::terminalState() {
 }
 
 string Engine::getWinner() {
-    return state.getWinner();
+    string winner = state.getWinner();
+    if (winner == "None") {
+        return "No one";
+    } else if (winner == "X") {
+        return "Computer";
+    } else {
+        return "You";
+    }
 }
 
 void Engine::reset() {
