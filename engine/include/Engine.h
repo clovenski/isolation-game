@@ -113,7 +113,7 @@ class Engine {
          */
         bool terminalState();
 
-        /* Return the winner: 'X', 'O' or 'None' to indicate the winner. */
+        /* Return the winner: 'Computer', 'You' or 'No one' */
         std::string getWinner();
 
         /* Reset the game state to its initial state.
