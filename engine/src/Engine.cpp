@@ -95,6 +95,8 @@ Position Engine::getCompMove() {
             Minimax::random = ++turnCount < 2;
         }
 
+        state.move(true, compMove);
+
         return compMove;
     } else {
         return {-1,-1};
