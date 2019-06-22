@@ -23,15 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // make the ui a fixed size
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);
-    isoFormCreated = false;
-    titleForm = new TitleForm();
-    QObject::connect(titleForm, SIGNAL(startButtonClicked()),
-                     this, SLOT(toIsolationForm()));
-
     stackedWidget = new QStackedWidget();
-    stackedWidget->addWidget(titleForm);
-//    stackedWidget->addWidget(isoForm);
     this->setCentralWidget(stackedWidget);
+    toTitleForm();
 
 }
 
@@ -42,79 +36,43 @@ MainWindow::~MainWindow()
 
 // private slots
 
-// all three radio buttons can't all be on
-// so when one is toggled on, the others are toggled off.
-void MainWindow::on_easyRadioButton_toggled(bool checked)
-{
-    GameSettings::easy = checked;
-}
-
-void MainWindow::on_mediumRadioButton_toggled(bool checked)
-{
-    GameSettings::medium = checked;
-}
-
-void MainWindow::on_hardRadioButton_toggled(bool checked)
-{
-    GameSettings::hard = checked;
-}
-
-// computer and player radio buttons can't both be on
-// so when one is toggled on, the other is toggled off.
-void MainWindow::on_computerRadioButton_toggled(bool checked)
-{
-    GameSettings::computerFirst = checked;
-}
-
-void MainWindow::on_playerRadioButton_toggled(bool checked)
-{
-    GameSettings::playerFirst = checked;
-}
-
-void MainWindow::on_startButton_clicked()
-{
-    // check if options have been toggled properly
-    if((GameSettings::easy ? 1 : 0) +
-       (GameSettings::medium ? 1 : 0) +
-       (GameSettings::hard ? 1 : 0) == 1 &&
-        GameSettings::playerFirst != GameSettings::computerFirst)
-    {
-        GameSettings::isHumanTurn = GameSettings::playerFirst;
-
-
-        stackedWidget = new QStackedWidget();
-        isoForm = new IsolationForm();
-        isoFormCreated = true;
-        QObject::connect(isoForm,SIGNAL(back()), this, SLOT(toTitleForm()));
-        stackedWidget->addWidget(isoForm);
-//        stackedWidget->addWidget(MainWindow());
-        this->setCentralWidget(stackedWidget);
-        isoForm->startGame();
-    }
-}
 
 void MainWindow::toTitleForm()
 {
-//    this->setCentralWidget(stackedWidget);
+    // disconnect everything
+//    this->disconnect();
+    isoFormCreated = false;
+    delete titleForm;
+    titleForm = new TitleForm();
+    QObject::connect(titleForm, SIGNAL(startButtonClicked()),
+                     this, SLOT(toIsolationForm()));
+
+    stackedWidget->addWidget(titleForm);
+    stackedWidget->setCurrentWidget(titleForm);
+    qDebug() << "To title form";
+    stackedWidget->removeWidget(isoForm);
     //    delete isoForm;
 }
 
 void MainWindow::toIsolationForm()
 {
     //disconnect everything
-    this->disconnect();
-
+//    this->disconnect();
+    delete isoForm;
     isoForm = new IsolationForm();
-    QObject::connect(isoForm,SIGNAL(back()), this, SLOT(toTitleForm()));
 
+    isoFormCreated = true;  // TODO do we need this?
     stackedWidget->addWidget(isoForm);
     stackedWidget->setCurrentWidget(isoForm);
     isoForm->startGame();
-//    stackedWidget->removeWidget(titleForm);
+    QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
+    qDebug() << "To isolation form.";
+    stackedWidget->removeWidget(titleForm);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if(isoFormCreated)
         isoForm->done = true;
+    QWidget::closeEvent(event);
 }

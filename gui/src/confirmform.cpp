@@ -22,6 +22,7 @@ void ConfirmForm::setLabel(QString str)
 void ConfirmForm::on_yesButton_clicked()
 {
     emit yesClicked();
+    this->close();
 }
 
 void ConfirmForm::on_noButton_clicked()

@@ -206,6 +206,7 @@ void IsolationForm::movePlayer()
 
 void IsolationForm::goBack()
 {
+    qDebug() << "goBack inside isolationForm";
     emit back();
 }
 

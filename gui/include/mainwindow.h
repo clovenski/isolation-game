@@ -49,20 +49,6 @@ public:
     ~MainWindow();
 
 private slots:
-    // radio button slots
-    // easy, medium, hard, difficulty toggles
-    void on_easyRadioButton_toggled(bool checked);
-    void on_mediumRadioButton_toggled(bool checked);
-    void on_hardRadioButton_toggled(bool checked);
-
-    // toggles whose turn at the start
-    void on_computerRadioButton_toggled(bool checked);
-    void on_playerRadioButton_toggled(bool checked);
-
-    // start button, checks if options are proper
-    // then deletes widgets and starts game
-    void on_startButton_clicked();
-
     // go to the respective form
     void toTitleForm();
     void toIsolationForm();
@@ -71,10 +57,6 @@ private:
     Ui::MainWindow *ui;
 
     QStackedWidget *stackedWidget;
-
-    // the board's corresponding view and scene
-    QGraphicsView *view;
-    QGraphicsScene *scene;
 
     // the form where the main title screen is
     TitleForm *titleForm;
