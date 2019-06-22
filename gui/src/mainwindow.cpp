@@ -72,7 +72,7 @@ void MainWindow::on_startButton_clicked()
     {
         GameSettings::isHumanTurn = GameSettings::playerFirst;
 
-        QStackedWidget *stackedWidget;
+
         stackedWidget = new QStackedWidget();
         isoForm = new IsolationForm();
         isoFormCreated = true;
