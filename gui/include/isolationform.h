@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "playerpiece.h"
 #include "aipiece.h"
+#include "confirmform.h"
 
 #include <stdlib.h>
 #include <QWidget>
@@ -66,15 +67,21 @@ private:
     AiPiece *aiPiece = new AiPiece();
     QEventLoop loop;
 
+    ConfirmForm *backForm;
+
 //    bool isHumanTurn;
     void deleteBoardSquare(int i, int j);
 
 signals:
-    void playerMadeMove();
+    void back();
 
 public slots:
     void movePlayer();
 
+private slots:
+    void on_backButton_clicked();
+    void on_resetButton_clicked();
+    void goBack();
 };
 
 #endif // ISOLATIONFORM_H

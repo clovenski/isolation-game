@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef TITLEFORM_H
+#define TITLEFORM_H
 
 #include <QMainWindow>
 #include <QGraphicsScene>
@@ -11,41 +11,16 @@
 class IsolationForm;
 
 namespace Ui {
-class MainWindow;
-static const int width = 800;
-static const int height = 600;
+class TitleForm;
 }
 
-namespace GameSettings {
-// difficulty settings
-extern bool easy;
-extern bool medium;
-extern bool hard;
-
-// whos turn it is at the start
-extern bool playerFirst;
-extern bool computerFirst;
-
-// who's turn it is currently in the game
-extern bool isHumanTurn;
-
-// scene width and height, must be divisble by boardSize for pixelSize
-const int sceneSize = 560;
-
-// boardSize x boardSize board, 8 x 8 in this case
-const int boardSize = 8;
-
-// the pixel x pixel size of the squares in the board
-const int pixelSize = sceneSize / boardSize;
-}
-
-class MainWindow : public QMainWindow
+class TitleForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit TitleForm(QWidget *parent = nullptr);
+    ~TitleForm();
 
 private slots:
     // radio button slots
@@ -66,9 +41,7 @@ private slots:
     void toHereFromIsoForm();
 
 private:
-    Ui::MainWindow *ui;
-
-    QStackedWidget *stackedWidget;
+    Ui::TitleForm *ui;
 
     // the board's corresponding view and scene
     QGraphicsView *view;
@@ -81,4 +54,4 @@ private:
     void closeEvent(QCloseEvent *);
 };
 
-#endif // MAINWINDOW_H
+#endif // TITLEFORM_H

@@ -26,27 +26,32 @@ CONFIG += c++11
 
 SOURCES += \
     src/aipiece.cpp \
+    src/confirmform.cpp \
     src/isolationform.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/playerpiece.cpp \
     ../engine/src/Engine.cpp \
     ../engine/src/Minimax.cpp \
-    ../engine/src/State.cpp
+    ../engine/src/State.cpp \
+    src/titleform.cpp
 
 HEADERS += \
-    ../aipiece.h \
     include/aipiece.h \
+    include/confirmform.h \
     include/isolationform.h \
     include/mainwindow.h \
     include/playerpiece.h \
     ../engine/include/Engine.h \
     ../engine/include/Minimax.h \
-    ../engine/include/State.h
+    ../engine/include/State.h \
+    include/titleform.h \
 
 FORMS += \
+    ui/confirmform.ui \
     ui/isolationform.ui \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    ui/titleform.ui
 
 INCLUDEPATH += \
     $$_PRO_FILE_PWD_/include/ \

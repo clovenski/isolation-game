@@ -1,22 +1,11 @@
+#include "titleform.h"
+#include "ui_titleform.h"
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "isolationform.h"
 
-namespace GameSettings
-{
-bool easy = false;
-bool medium = false;
-bool hard = false;
-
-bool playerFirst = false;
-bool computerFirst = false;
-
-bool isHumanTurn = false;
-}
-
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+TitleForm::TitleForm(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::TitleForm)
 {
 
     // make the ui a fixed size
@@ -26,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-MainWindow::~MainWindow()
+TitleForm::~TitleForm()
 {
     delete ui;
 }
@@ -35,34 +24,34 @@ MainWindow::~MainWindow()
 
 // all three radio buttons can't all be on
 // so when one is toggled on, the others are toggled off.
-void MainWindow::on_easyRadioButton_toggled(bool checked)
+void TitleForm::on_easyRadioButton_toggled(bool checked)
 {
     GameSettings::easy = checked;
 }
 
-void MainWindow::on_mediumRadioButton_toggled(bool checked)
+void TitleForm::on_mediumRadioButton_toggled(bool checked)
 {
     GameSettings::medium = checked;
 }
 
-void MainWindow::on_hardRadioButton_toggled(bool checked)
+void TitleForm::on_hardRadioButton_toggled(bool checked)
 {
     GameSettings::hard = checked;
 }
 
 // computer and player radio buttons can't both be on
 // so when one is toggled on, the other is toggled off.
-void MainWindow::on_computerRadioButton_toggled(bool checked)
+void TitleForm::on_computerRadioButton_toggled(bool checked)
 {
     GameSettings::computerFirst = checked;
 }
 
-void MainWindow::on_playerRadioButton_toggled(bool checked)
+void TitleForm::on_playerRadioButton_toggled(bool checked)
 {
     GameSettings::playerFirst = checked;
 }
 
-void MainWindow::on_startButton_clicked()
+void TitleForm::on_startButton_clicked()
 {
     // check if options have been toggled properly
     if((GameSettings::easy ? 1 : 0) +
@@ -79,18 +68,18 @@ void MainWindow::on_startButton_clicked()
         QObject::connect(isoForm,SIGNAL(back()), this, SLOT(toHereFromIsoForm()));
         stackedWidget->addWidget(isoForm);
 //        stackedWidget->addWidget(MainWindow());
-        this->setCentralWidget(stackedWidget);
+//        this->setCentralWidget(stackedWidget);
         isoForm->startGame();
     }
 }
 
-void MainWindow::toHereFromIsoForm()
+void TitleForm::toHereFromIsoForm()
 {
 //    this->setCentralWidget(stackedWidget);
 //    delete isoForm;
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void TitleForm::closeEvent(QCloseEvent *event)
 {
     if(isoFormCreated)
         isoForm->done = true;

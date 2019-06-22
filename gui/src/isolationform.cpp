@@ -60,14 +60,9 @@ IsolationForm::IsolationForm(QWidget *parent) :
     scene->addItem(humanPlayer);
     scene->addItem(aiPiece);
 
-    bool con2 = QObject::connect(humanPlayer, SIGNAL(positionChanged()),
-                                 this, SLOT(movePlayer()));
-    bool con3 = QObject::connect(humanPlayer, SIGNAL(positionChanged()),
-                                 &loop, SLOT(quit()));
-    if(con2)
-        qDebug() << "Connect2 worked";
-    if(con3)
-        qDebug() << "Connect3 worked";
+    QObject::connect(humanPlayer, SIGNAL(positionChanged()),this, SLOT(movePlayer()));
+    QObject::connect(humanPlayer, SIGNAL(positionChanged()), &loop, SLOT(quit()));
+
 
     done = false;
 }
@@ -208,3 +203,25 @@ void IsolationForm::movePlayer()
         }
     }
 }
+
+void IsolationForm::goBack()
+{
+    emit back();
+}
+
+// push buttons
+
+void IsolationForm::on_backButton_clicked()
+{
+    backForm = new ConfirmForm();
+    QObject::connect(backForm, SIGNAL(yesClicked()), this, SLOT(goBack()));
+    backForm->setLabel("Are you sure you want to go back?");
+    backForm->show();
+}
+
+void IsolationForm::on_resetButton_clicked()
+{
+
+}
+
+
