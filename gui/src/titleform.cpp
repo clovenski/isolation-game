@@ -61,26 +61,14 @@ void TitleForm::on_startButton_clicked()
     {
         GameSettings::isHumanTurn = GameSettings::playerFirst;
 
-        QStackedWidget *stackedWidget;
-        stackedWidget = new QStackedWidget();
-        isoForm = new IsolationForm();
-        isoFormCreated = true;
-        QObject::connect(isoForm,SIGNAL(back()), this, SLOT(toHereFromIsoForm()));
-        stackedWidget->addWidget(isoForm);
-//        stackedWidget->addWidget(MainWindow());
-//        this->setCentralWidget(stackedWidget);
-        isoForm->startGame();
+        emit startButtonClicked();
     }
 }
 
-void TitleForm::toHereFromIsoForm()
-{
-//    this->setCentralWidget(stackedWidget);
-//    delete isoForm;
-}
 
 void TitleForm::closeEvent(QCloseEvent *event)
 {
     if(isoFormCreated)
         isoForm->done = true;
+    QWidget::closeEvent(event);
 }

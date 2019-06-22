@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "isolationform.h"
+#include "titleform.h"
 
 namespace GameSettings
 {
@@ -23,6 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);
     isoFormCreated = false;
+    titleForm = new TitleForm();
+    QObject::connect(titleForm, SIGNAL(startButtonClicked()),
+                     this, SLOT(toIsolationForm()));
+
+    stackedWidget = new QStackedWidget();
+    stackedWidget->addWidget(titleForm);
+//    stackedWidget->addWidget(isoForm);
+    this->setCentralWidget(stackedWidget);
 
 }
 
@@ -76,7 +85,7 @@ void MainWindow::on_startButton_clicked()
         stackedWidget = new QStackedWidget();
         isoForm = new IsolationForm();
         isoFormCreated = true;
-        QObject::connect(isoForm,SIGNAL(back()), this, SLOT(toHereFromIsoForm()));
+        QObject::connect(isoForm,SIGNAL(back()), this, SLOT(toTitleForm()));
         stackedWidget->addWidget(isoForm);
 //        stackedWidget->addWidget(MainWindow());
         this->setCentralWidget(stackedWidget);
@@ -84,10 +93,24 @@ void MainWindow::on_startButton_clicked()
     }
 }
 
-void MainWindow::toHereFromIsoForm()
+void MainWindow::toTitleForm()
 {
 //    this->setCentralWidget(stackedWidget);
-//    delete isoForm;
+    //    delete isoForm;
+}
+
+void MainWindow::toIsolationForm()
+{
+    //disconnect everything
+    this->disconnect();
+
+    isoForm = new IsolationForm();
+    QObject::connect(isoForm,SIGNAL(back()), this, SLOT(toTitleForm()));
+
+    stackedWidget->addWidget(isoForm);
+    stackedWidget->setCurrentWidget(isoForm);
+    isoForm->startGame();
+//    stackedWidget->removeWidget(titleForm);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

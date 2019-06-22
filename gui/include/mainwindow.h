@@ -9,6 +9,7 @@
 #include <QStackedWidget>
 
 class IsolationForm;
+class TitleForm;
 
 namespace Ui {
 class MainWindow;
@@ -62,8 +63,9 @@ private slots:
     // then deletes widgets and starts game
     void on_startButton_clicked();
 
-    // go back to this screen from the Isolation Form
-    void toHereFromIsoForm();
+    // go to the respective form
+    void toTitleForm();
+    void toIsolationForm();
 
 private:
     Ui::MainWindow *ui;
@@ -73,6 +75,9 @@ private:
     // the board's corresponding view and scene
     QGraphicsView *view;
     QGraphicsScene *scene;
+
+    // the form where the main title screen is
+    TitleForm *titleForm;
 
     // the form where the isolation game is played
     IsolationForm *isoForm;

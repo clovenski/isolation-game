@@ -22,6 +22,8 @@ public:
     explicit TitleForm(QWidget *parent = nullptr);
     ~TitleForm();
 
+signals:
+    void startButtonClicked();
 private slots:
     // radio button slots
     // easy, medium, hard, difficulty toggles
@@ -37,15 +39,12 @@ private slots:
     // then deletes widgets and starts game
     void on_startButton_clicked();
 
-    // go back to this screen from the Isolation Form
-    void toHereFromIsoForm();
-
 private:
     Ui::TitleForm *ui;
 
     // the board's corresponding view and scene
-    QGraphicsView *view;
-    QGraphicsScene *scene;
+//    QGraphicsView *view;
+//    QGraphicsScene *scene;
 
     // the form where the isolation game is played
     IsolationForm *isoForm;
