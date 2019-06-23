@@ -19,7 +19,15 @@
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>180</y>
+     <width>400</width>
+     <height>250</height>
+    </rect>
+   </property>
    <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>

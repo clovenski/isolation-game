@@ -62,6 +62,7 @@ IsolationForm::IsolationForm(QWidget *parent) :
 
     QObject::connect(humanPlayer, SIGNAL(positionChanged()),this, SLOT(movePlayer()));
     QObject::connect(humanPlayer, SIGNAL(positionChanged()), &loop, SLOT(quit()));
+//    QObject::connect(this, SIGNAL(destroyed()), &loop, SLOT(deleteLater()));
 
 
     done = false;
@@ -202,6 +203,14 @@ void IsolationForm::movePlayer()
             return;
         }
     }
+}
+
+void IsolationForm::endLoop()
+{
+    qDebug() << "ending loop";
+    loop.exit();
+//    loop.deleteLater();
+    loop.quit();
 }
 
 void IsolationForm::goBack()

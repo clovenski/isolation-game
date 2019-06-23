@@ -77,6 +77,7 @@ signals:
 
 public slots:
     void movePlayer();
+    void endLoop();
 
 private slots:
     void on_backButton_clicked();

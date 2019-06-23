@@ -25,8 +25,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     stackedWidget = new QStackedWidget();
     this->setCentralWidget(stackedWidget);
-    toTitleForm();
 
+    isoFormCreated = false;
+    titleForm = new TitleForm();
+    QObject::connect(titleForm, SIGNAL(startButtonClicked()),
+                 this, SLOT(toIsolationForm()));
+    stackedWidget->addWidget(titleForm);
+
+//    QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
 }
 
 MainWindow::~MainWindow()
@@ -36,42 +42,44 @@ MainWindow::~MainWindow()
 
 // private slots
 
-
 void MainWindow::toTitleForm()
 {
-    // disconnect everything
-//    this->disconnect();
+    for(int i = 0; i < stackedWidget->count(); i++)
+    {
+        QWidget* widget = stackedWidget->widget(i);
+        stackedWidget->removeWidget(widget);
+        widget->deleteLater();
+    }
+//    isoForm->deleteLater();
     isoFormCreated = false;
-    delete titleForm;
-    titleForm = new TitleForm();
+    titleForm = new TitleForm(); // possible memory leak?
     QObject::connect(titleForm, SIGNAL(startButtonClicked()),
-                     this, SLOT(toIsolationForm()));
-
+                 this, SLOT(toIsolationForm()));
     stackedWidget->addWidget(titleForm);
     stackedWidget->setCurrentWidget(titleForm);
-    qDebug() << "To title form";
-    stackedWidget->removeWidget(isoForm);
-    //    delete isoForm;
 }
 
 void MainWindow::toIsolationForm()
 {
-    //disconnect everything
-//    this->disconnect();
-    delete isoForm;
+//    for(int i = 0; i < stackedWidget->count(); i++)
+//    {
+//        QWidget* widget = stackedWidget->widget(i);
+//        stackedWidget->removeWidget(widget);
+//        widget->deleteLater();
+//    }
+    isoFormCreated = true;
     isoForm = new IsolationForm();
-
-    isoFormCreated = true;  // TODO do we need this?
+    QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
+    QObject::connect(this, SIGNAL(closed()), isoForm, SLOT(endLoop()));
     stackedWidget->addWidget(isoForm);
     stackedWidget->setCurrentWidget(isoForm);
     isoForm->startGame();
-    QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
-    qDebug() << "To isolation form.";
-    stackedWidget->removeWidget(titleForm);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    emit closed();
+    // does not work when using back button, having created mult. forms.
     if(isoFormCreated)
         isoForm->done = true;
     QWidget::closeEvent(event);

@@ -47,7 +47,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+signals:
+    void closed();
 private slots:
     // go to the respective form
     void toTitleForm();
