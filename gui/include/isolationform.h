@@ -48,7 +48,8 @@ private:
         Position position;
 
         // whether or not this block has been occupied and blocked
-        bool blocked = false;
+        // starts as true until they've been drawn in visually
+        bool blocked = true;
 
     };
     // array of the board squares, should be 8 x 8 by default
@@ -65,24 +66,30 @@ private:
     Engine *ai;
 
     AiPiece *aiPiece = new AiPiece();
-    QEventLoop loop;
+    QEventLoop loop;    // TODO, replace with connects instead, and wait for user input?
 
     ConfirmForm *backForm;
+    ConfirmForm *resetForm;
 
 //    bool isHumanTurn;
     void deleteBoardSquare(int i, int j);
+    void moveToStartingPositions();
+    void drawBoardSquares(QBrush brush1, QBrush brush2);
 
 signals:
     void back();
+    void reset();
 
 public slots:
     void movePlayer();
     void endLoop();
 
+
 private slots:
     void on_backButton_clicked();
     void on_resetButton_clicked();
     void goBack();
+    void goReset();
 };
 
 #endif // ISOLATIONFORM_H

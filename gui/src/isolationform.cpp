@@ -42,30 +42,32 @@ IsolationForm::IsolationForm(QWidget *parent) :
     if(GameSettings::playerFirst)
     {
         ai = new Engine(false, 2.0);
-        humanPlayer->setNewPixmap(":/images/assets/queenwhite.png");
-        humanPlayer->movePlayerTo(0,0);
         aiPiece = new AiPiece();
-        aiPiece->setPos(GameSettings::sceneSize - GameSettings::pixelSize,
-                        GameSettings::sceneSize - GameSettings::pixelSize);
+        humanPlayer->setNewPixmap(":/images/assets/queenwhite.png"); 
     } else {
         ai = new Engine(true, 2.0);
-        humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
-        humanPlayer->movePlayerTo(GameSettings::sceneSize - GameSettings::pixelSize,
-                                  GameSettings::sceneSize - GameSettings::pixelSize);
         aiPiece = new AiPiece();
-        aiPiece->setPos(0,0);
+        humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
     }
+
+    moveToStartingPositions();
 
     // add the graphics items to the scene
     scene->addItem(humanPlayer);
     scene->addItem(aiPiece);
 
+    // add the back and reset forms that user must confirm to proceed
+    backForm = new ConfirmForm();
+    QObject::connect(backForm, SIGNAL(yesClicked()), this, SLOT(goBack()));
+    backForm->setLabel("Are you sure you want to go back?");
+
+    resetForm = new ConfirmForm();
+    QObject::connect(resetForm, SIGNAL(yesClicked()), this, SLOT(goReset()));
+    resetForm->setLabel("Are you sure you want to reset the game?");
+
     QObject::connect(humanPlayer, SIGNAL(positionChanged()),this, SLOT(movePlayer()));
     QObject::connect(humanPlayer, SIGNAL(positionChanged()), &loop, SLOT(quit()));
 //    QObject::connect(this, SIGNAL(destroyed()), &loop, SLOT(deleteLater()));
-
-
-    done = false;
 }
 
 IsolationForm::~IsolationForm()
@@ -73,7 +75,7 @@ IsolationForm::~IsolationForm()
     delete ui;
 }
 
-// default colors of the board that makes it look like wood.
+// default colors of the board that makes it look like solid brown wood.
 void IsolationForm::woodBoardColors(){
     QColor color1 = QColor();
     color1.setNamedColor("#DEB887");
@@ -93,31 +95,13 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
     brush2.setColor(color2);
 
     // draw the squares in
-    bool everyOther = true;
-    for(int i = 0; i < GameSettings::boardSize; i++)
-    {
-        for(int j = 0; j < GameSettings::boardSize; j++)
-        {
-            if(everyOther)
-            {
-                boardSquares[i][j].rect = scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
-                               GameSettings::pixelSize, GameSettings::pixelSize,
-                               QPen(color1), brush1);
-            } else {
-                boardSquares[i][j].rect = scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
-                               GameSettings::pixelSize, GameSettings::pixelSize,
-                               QPen(color2), brush2);
-            }
-            everyOther = !everyOther;
-        }
-        everyOther = !everyOther;
-    }
+    drawBoardSquares(brush1, brush2);
 }
 
 void IsolationForm::startGame()
 {
     Position aiMove;
-
+    done = false;
     while(!ai->terminalState() && !done)
     {
         if(GameSettings::isHumanTurn)
@@ -151,6 +135,51 @@ void IsolationForm::deleteBoardSquare(int i, int j)
 {
     boardSquares[i][j].blocked = true;
     delete boardSquares[i][j].rect;
+}
+
+void IsolationForm::moveToStartingPositions()
+{
+    if(GameSettings::playerFirst)
+    {
+        humanPlayer->movePlayerTo(0,0);
+        aiPiece->setPos(GameSettings::sceneSize - GameSettings::pixelSize,
+                        GameSettings::sceneSize - GameSettings::pixelSize);
+    } else {
+        humanPlayer->movePlayerTo(GameSettings::sceneSize - GameSettings::pixelSize,
+                                  GameSettings::sceneSize - GameSettings::pixelSize);
+        aiPiece->setPos(0,0);
+    }
+    humanPlayer->setZValue(1);
+    aiPiece->setZValue(1);
+    humanPlayer->update();
+    aiPiece->update();
+}
+
+void IsolationForm::drawBoardSquares(QBrush brush1, QBrush brush2)
+{
+    bool everyOther = true;
+    for(int i = 0; i < GameSettings::boardSize; i++)
+    {
+        for(int j = 0; j < GameSettings::boardSize; j++)
+        {
+            if(boardSquares[i][j].blocked)
+            {
+            if(everyOther)
+                {
+                    boardSquares[i][j].rect = scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
+                                   GameSettings::pixelSize, GameSettings::pixelSize,
+                                   QPen(brush1.color()), brush1);
+                } else {
+                    boardSquares[i][j].rect = scene->addRect(boardSquares[i][j].x, boardSquares[i][j].y,
+                                   GameSettings::pixelSize, GameSettings::pixelSize,
+                                   QPen(brush2.color()), brush2);
+                }
+            }
+            boardSquares[i][j].blocked = false;
+            everyOther = !everyOther;
+        }
+        everyOther = !everyOther;
+    }
 }
 
 // public slots
@@ -210,28 +239,44 @@ void IsolationForm::endLoop()
     qDebug() << "ending loop";
     loop.exit();
 //    loop.deleteLater();
-    loop.quit();
+//    loop.quit();
 }
 
 void IsolationForm::goBack()
 {
     qDebug() << "goBack inside isolationForm";
+    done = true;
+    loop.exit();
     emit back();
 }
 
+// resets the game with the same settings
+void IsolationForm::goReset()
+{
+    ai->reset();
+    done = true;
+    loop.exit();
+    // redraw any missing squares
+    woodBoardColors();
+
+    // reset the positions of the players
+    moveToStartingPositions();
+
+    GameSettings::isHumanTurn = GameSettings::playerFirst;
+
+    startGame();
+}
 // push buttons
 
 void IsolationForm::on_backButton_clicked()
 {
-    backForm = new ConfirmForm();
-    QObject::connect(backForm, SIGNAL(yesClicked()), this, SLOT(goBack()));
-    backForm->setLabel("Are you sure you want to go back?");
+
     backForm->show();
 }
 
 void IsolationForm::on_resetButton_clicked()
 {
-
+    resetForm->show();
 }
 
 

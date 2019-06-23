@@ -48,7 +48,9 @@ void MainWindow::toTitleForm()
     {
         QWidget* widget = stackedWidget->widget(i);
         stackedWidget->removeWidget(widget);
-        widget->deleteLater();
+//        widget->deleteLater();
+        if(widget != nullptr)
+            delete widget;
     }
 //    isoForm->deleteLater();
     isoFormCreated = false;
@@ -61,12 +63,14 @@ void MainWindow::toTitleForm()
 
 void MainWindow::toIsolationForm()
 {
-//    for(int i = 0; i < stackedWidget->count(); i++)
-//    {
-//        QWidget* widget = stackedWidget->widget(i);
-//        stackedWidget->removeWidget(widget);
+    for(int i = 0; i < stackedWidget->count(); i++)
+    {
+        QWidget* widget = stackedWidget->widget(i);
+        stackedWidget->removeWidget(widget);
 //        widget->deleteLater();
-//    }
+        if(widget != nullptr)
+            delete widget;
+    }
     isoFormCreated = true;
     isoForm = new IsolationForm();
     QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
@@ -83,4 +87,5 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if(isoFormCreated)
         isoForm->done = true;
     QWidget::closeEvent(event);
+//    QCoreApplication::quit();
 }
