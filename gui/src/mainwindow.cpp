@@ -26,13 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     stackedWidget = new QStackedWidget();
     this->setCentralWidget(stackedWidget);
 
-    isoFormCreated = false;
-    titleForm = new TitleForm();
-    QObject::connect(titleForm, SIGNAL(startButtonClicked()),
-                 this, SLOT(toIsolationForm()));
-    stackedWidget->addWidget(titleForm);
-
-//    QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
+    toTitleForm();
 }
 
 MainWindow::~MainWindow()
@@ -44,16 +38,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::toTitleForm()
 {
+    GameSettings::easy = false;
+    GameSettings::medium = false;
+    GameSettings::hard = false;
+    GameSettings::playerFirst = false;
+    GameSettings::computerFirst = false;
+    GameSettings::isHumanTurn = false;
+
+    // delte the widgets that we no longer need
     for(int i = 0; i < stackedWidget->count(); i++)
     {
         QWidget* widget = stackedWidget->widget(i);
         stackedWidget->removeWidget(widget);
-//        widget->deleteLater();
         if(widget != nullptr)
             delete widget;
     }
-//    isoForm->deleteLater();
-    isoFormCreated = false;
     titleForm = new TitleForm(); // possible memory leak?
     QObject::connect(titleForm, SIGNAL(startButtonClicked()),
                  this, SLOT(toIsolationForm()));
@@ -67,11 +66,9 @@ void MainWindow::toIsolationForm()
     {
         QWidget* widget = stackedWidget->widget(i);
         stackedWidget->removeWidget(widget);
-//        widget->deleteLater();
         if(widget != nullptr)
             delete widget;
     }
-    isoFormCreated = true;
     isoForm = new IsolationForm();
     QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
     stackedWidget->addWidget(isoForm);
@@ -82,9 +79,6 @@ void MainWindow::toIsolationForm()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     emit closed();
-    // does not work when using back button, having created mult. forms.
-    if(isoFormCreated)
-        isoForm->done = true;
     QWidget::closeEvent(event);
 //    QCoreApplication::quit();
 }

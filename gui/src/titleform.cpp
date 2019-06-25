@@ -63,12 +63,14 @@ void TitleForm::on_startButton_clicked()
 
         emit startButtonClicked();
     }
+    else
+        qDebug() << "Must enter proper settings.";
 }
 
 
 void TitleForm::closeEvent(QCloseEvent *event)
 {
-    if(isoFormCreated)
-        isoForm->done = true;
+//    if(isoFormCreated)
+//        isoForm->done = true;
     QWidget::closeEvent(event);
 }

@@ -27,7 +27,7 @@ public:
     void woodBoardColors();
     void changeBoardColors(QColor color1, QColor color2);
     void startGame();
-    bool done;
+//    bool done;
 
 private:
     Ui::IsolationForm *ui;

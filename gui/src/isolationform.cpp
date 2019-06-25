@@ -242,7 +242,7 @@ void IsolationForm::checkTerminalState()
 void IsolationForm::goBack()
 {
     qDebug() << "goBack inside isolationForm";
-    done = true;
+//    done = true;
     emit back();
 }
 
@@ -250,7 +250,7 @@ void IsolationForm::goBack()
 void IsolationForm::goReset()
 {
     ai->reset();
-    done = true;
+//    done = true;
     // redraw any missing squares
     woodBoardColors();
 
