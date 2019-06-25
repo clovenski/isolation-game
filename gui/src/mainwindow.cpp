@@ -74,7 +74,6 @@ void MainWindow::toIsolationForm()
     isoFormCreated = true;
     isoForm = new IsolationForm();
     QObject::connect(isoForm, SIGNAL(back()), this, SLOT(toTitleForm()));
-    QObject::connect(this, SIGNAL(closed()), isoForm, SLOT(endLoop()));
     stackedWidget->addWidget(isoForm);
     stackedWidget->setCurrentWidget(isoForm);
     isoForm->startGame();

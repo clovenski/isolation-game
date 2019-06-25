@@ -12,7 +12,6 @@
 #include <QBrush>
 #include <QColor>
 #include <QGraphicsObject>
-#include <QEventLoop>
 
 namespace Ui {
 class IsolationForm;
@@ -66,7 +65,6 @@ private:
     Engine *ai;
 
     AiPiece *aiPiece = new AiPiece();
-    QEventLoop loop;    // TODO, replace with connects instead, and wait for user input?
 
     ConfirmForm *backForm;
     ConfirmForm *resetForm;
@@ -79,10 +77,13 @@ private:
 signals:
     void back();
     void reset();
+    void playerMoved();
+    void computerMoved();
 
 public slots:
     void movePlayer();
-    void endLoop();
+    void moveComputer();
+    void checkTerminalState();
 
 
 private slots:

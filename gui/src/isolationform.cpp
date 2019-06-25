@@ -66,8 +66,9 @@ IsolationForm::IsolationForm(QWidget *parent) :
     resetForm->setLabel("Are you sure you want to reset the game?");
 
     QObject::connect(humanPlayer, SIGNAL(positionChanged()),this, SLOT(movePlayer()));
-    QObject::connect(humanPlayer, SIGNAL(positionChanged()), &loop, SLOT(quit()));
-//    QObject::connect(this, SIGNAL(destroyed()), &loop, SLOT(deleteLater()));
+
+    QObject::connect(this, SIGNAL(playerMoved()), this, SLOT(moveComputer()));
+    QObject::connect(this, SIGNAL(computerMoved()), this, SLOT(checkTerminalState()));
 }
 
 IsolationForm::~IsolationForm()
@@ -100,35 +101,8 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
 
 void IsolationForm::startGame()
 {
-    Position aiMove;
-    done = false;
-    while(!ai->terminalState() && !done)
-    {
-        if(GameSettings::isHumanTurn)
-        {
-            qDebug() << "foo";
-            loop.exec();
-        } else {
-            qDebug() << "a3";
-            deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
-                              static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
-            aiMove = ai->getCompMove();
-            qDebug().noquote() << QString::fromStdString(ai->stateString())
-                               << QString::fromStdString("Best depth: " + ai->debugCompMove("depth") + "\n")
-                               << QString::fromStdString("Best utility: " + ai->debugCompMove("utility") + "\n")
-                               << QString::fromStdString("Table size: " + ai->debugCompMove("table size") + "\n")
-                               << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
-            aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
-                            aiMove.row * GameSettings::pixelSize);
-//            deleteBoardSquare(aiMove.row, aiMove.col);
-            qDebug() << "Computer Move: " << aiMove.col << ", "<< aiMove.row;
-            humanPlayer->setupTurnTrue();
-        }
-
-//        if(loop == nullptr)
-//            return;
-    }
-    qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
+    if(GameSettings::computerFirst)
+        moveComputer();
 }
 
 void IsolationForm::deleteBoardSquare(int i, int j)
@@ -224,7 +198,7 @@ void IsolationForm::movePlayer()
 
             GameSettings::isHumanTurn = false;
 
-            loop.exit();
+            emit playerMoved();
         } catch(const std::out_of_range e)
         {
             qDebug() << "Invalid Move.";
@@ -234,19 +208,41 @@ void IsolationForm::movePlayer()
     }
 }
 
-void IsolationForm::endLoop()
+void IsolationForm::moveComputer()
 {
-    qDebug() << "ending loop";
-    loop.exit();
-//    loop.deleteLater();
-//    loop.quit();
+    if(!ai->terminalState())
+    {
+        deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
+                          static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
+        Position aiMove = ai->getCompMove();
+        qDebug().noquote() << QString::fromStdString(ai->stateString())
+                           << QString::fromStdString("Best depth: " + ai->debugCompMove("depth") + "\n")
+                           << QString::fromStdString("Best utility: " + ai->debugCompMove("utility") + "\n")
+                           << QString::fromStdString("Table size: " + ai->debugCompMove("table size") + "\n")
+                           << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
+        aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
+                        aiMove.row * GameSettings::pixelSize);
+//            deleteBoardSquare(aiMove.row, aiMove.col);
+        qDebug() << "Computer Move: " << aiMove.col << ", "<< aiMove.row;
+        humanPlayer->setupTurnTrue();
+        emit computerMoved();
+    } else
+    {
+        qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
+    }
+}
+
+
+void IsolationForm::checkTerminalState()
+{
+    if(ai->terminalState())
+        qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
 }
 
 void IsolationForm::goBack()
 {
     qDebug() << "goBack inside isolationForm";
     done = true;
-    loop.exit();
     emit back();
 }
 
@@ -255,7 +251,6 @@ void IsolationForm::goReset()
 {
     ai->reset();
     done = true;
-    loop.exit();
     // redraw any missing squares
     woodBoardColors();
 
