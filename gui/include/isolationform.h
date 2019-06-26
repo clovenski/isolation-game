@@ -69,10 +69,19 @@ private:
 
     ConfirmForm *backForm;
     ConfirmForm *resetForm;
+    int turnNumber;
 
+    // deletes the graphical board square
     void deleteBoardSquare(int i, int j);
+
+    // moves both human and computer player into their starting positions
     void moveToStartingPositions();
+
+    // draws the graphical board square
     void drawBoardSquares(QBrush brush1, QBrush brush2);
+
+    // returns grid position in columns and rows to standard chess notation
+    QString positionToText(int col, int row);
 
 signals:
     void back();

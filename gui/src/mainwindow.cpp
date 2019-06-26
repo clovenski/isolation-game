@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // make the ui a fixed size
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     ui->setupUi(this);
+
     stackedWidget = new QStackedWidget();
     this->setCentralWidget(stackedWidget);
 

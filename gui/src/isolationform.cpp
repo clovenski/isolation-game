@@ -101,6 +101,8 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
 
 void IsolationForm::startGame()
 {
+    ui->textBrowser_moves->append("Start of New Game");
+    turnNumber = 1;
     if(GameSettings::computerFirst)
         moveComputer();
 }
@@ -156,6 +158,35 @@ void IsolationForm::drawBoardSquares(QBrush brush1, QBrush brush2)
     }
 }
 
+QString IsolationForm::positionToText(int col, int row)
+{
+    QString str = QString();
+    switch(col)
+    {
+    case 0: str.append('A'); break;
+    case 1: str.append('B'); break;
+    case 2: str.append('C'); break;
+    case 3: str.append('D'); break;
+    case 4: str.append('E'); break;
+    case 5: str.append('F'); break;
+    case 6: str.append('G'); break;
+    case 7: str.append('H'); break;
+    }
+    switch(row)
+    {
+    case 0: str.append('8'); break;
+    case 1: str.append('7'); break;
+    case 2: str.append('6'); break;
+    case 3: str.append('5'); break;
+    case 4: str.append('4'); break;
+    case 5: str.append('3'); break;
+    case 6: str.append('2'); break;
+    case 7: str.append('1'); break;
+    }
+
+    return str;
+}
+
 // public slots
 
 void IsolationForm::movePlayer()
@@ -179,25 +210,35 @@ void IsolationForm::movePlayer()
 
         qDebug().noquote() << "Player's move: "<<playerMove.col << ", "<< playerMove.row;
 
-        // vector of viable choices for the human player, not ai player
-//        std::vector<Position> choices = ai->getChoices();
-
         // tries out if the position the human decided on is a viable position.
         // if not, return.
         try
         {
+            // throws out of range if invalid move
             ai->movePlayer(playerMove);
+
             // Make original position blocked off, and show it visually
             deleteBoardSquare(static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize,
                         static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize);
             qDebug() << "X: " << boardSquares[playerMove.row][playerMove.col].x
                      << " Y: " << boardSquares[playerMove.row][playerMove.col].y;
+
             // Moves the player and changes the original position coordinates.
             humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
                                       boardSquares[playerMove.row][playerMove.col].y);
 
-            GameSettings::isHumanTurn = false;
+            // output to the textbox the move the human player did.
+            QString str = QString();
+            str.append(QString::number(turnNumber) + ". " );
+            if(GameSettings::playerFirst)
+                str.append("Player 1: ");
+            else
+                str.append("Player 2: ");
+            str.append(positionToText(playerMove.col, playerMove.row));
+            ui->textBrowser_moves->append(str);
+            turnNumber++;
 
+            GameSettings::isHumanTurn = false;
             emit playerMoved();
         } catch(const std::out_of_range e)
         {
@@ -222,7 +263,18 @@ void IsolationForm::moveComputer()
                            << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
         aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
                         aiMove.row * GameSettings::pixelSize);
-//            deleteBoardSquare(aiMove.row, aiMove.col);
+
+        // output the computer's move to the textbox, according to chess notation
+        QString str = QString();
+        str.append(QString::number(turnNumber) + ". " );
+        if(GameSettings::computerFirst)
+            str.append("Player 1: ");
+        else
+            str.append("Player 2: ");
+        str.append( positionToText(aiMove.col, aiMove.row));
+        ui->textBrowser_moves->append(str);
+        turnNumber++;
+
         qDebug() << "Computer Move: " << aiMove.col << ", "<< aiMove.row;
         humanPlayer->setupTurnTrue();
         emit computerMoved();
@@ -250,7 +302,7 @@ void IsolationForm::goBack()
 void IsolationForm::goReset()
 {
     ai->reset();
-//    done = true;
+
     // redraw any missing squares
     woodBoardColors();
 
@@ -259,6 +311,7 @@ void IsolationForm::goReset()
 
     GameSettings::isHumanTurn = GameSettings::playerFirst;
 
+    ui->textBrowser_moves->append("");
     startGame();
 }
 // push buttons
