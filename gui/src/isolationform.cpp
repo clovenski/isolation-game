@@ -101,7 +101,7 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
 
 void IsolationForm::startGame()
 {
-    ui->textBrowser_moves->append("Start of New Game");
+    ui->textBrowser_moves->append("Start of a New Game");
     turnNumber = 1;
     if(GameSettings::computerFirst)
         moveComputer();
@@ -239,6 +239,7 @@ void IsolationForm::movePlayer()
             turnNumber++;
 
             GameSettings::isHumanTurn = false;
+            checkTerminalState();
             emit playerMoved();
         } catch(const std::out_of_range e)
         {
@@ -288,7 +289,7 @@ void IsolationForm::moveComputer()
 void IsolationForm::checkTerminalState()
 {
     if(ai->terminalState())
-        qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
+        ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " has won!");
 }
 
 void IsolationForm::goBack()
