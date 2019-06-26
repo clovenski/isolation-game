@@ -12,6 +12,7 @@
 #include <QBrush>
 #include <QColor>
 #include <QGraphicsObject>
+#include <QLayout>
 
 namespace Ui {
 class IsolationForm;
@@ -69,7 +70,6 @@ private:
     ConfirmForm *backForm;
     ConfirmForm *resetForm;
 
-//    bool isHumanTurn;
     void deleteBoardSquare(int i, int j);
     void moveToStartingPositions();
     void drawBoardSquares(QBrush brush1, QBrush brush2);

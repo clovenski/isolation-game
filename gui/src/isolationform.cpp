@@ -265,7 +265,6 @@ void IsolationForm::goReset()
 
 void IsolationForm::on_backButton_clicked()
 {
-
     backForm->show();
 }
 
