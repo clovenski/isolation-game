@@ -293,7 +293,10 @@ void IsolationForm::moveComputer()
 void IsolationForm::checkTerminalState()
 {
     if(ai->terminalState())
+    {
+        humanPlayer->setClickAndDragFlags(false);
         ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " has won!");
+    }
 }
 
 void IsolationForm::goBack()

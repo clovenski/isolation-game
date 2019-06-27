@@ -13,6 +13,7 @@ PlayerPiece::PlayerPiece(QGraphicsItem *parent)
         setupTurnTrue();
     } else {
         pixmap = new QPixmap(":/images/assets/queenblack.png");
+        setClickAndDragFlags(false);
     }
 
     GameSettings::isHumanTurn = GameSettings::playerFirst;
@@ -27,14 +28,13 @@ void PlayerPiece::setNewPixmap(QString fileName)
     pixmap = new QPixmap(fileName);
 }
 
-void PlayerPiece::setClickAndDragFlags()
+void PlayerPiece::setClickAndDragFlags(bool b)
 {
-    setFlag(QGraphicsItem::ItemIsSelectable);
-    setFlag(QGraphicsItem::ItemIsMovable);
-    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-    setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
-    setAcceptDrops(true);
-
+    setFlag(QGraphicsItem::ItemIsSelectable, b);
+    setFlag(QGraphicsItem::ItemIsMovable, b);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, b);
+    setFlag(QGraphicsItem::ItemSendsScenePositionChanges, b);
+    setAcceptDrops(b);
 }
 
 // move the player to another position
@@ -52,7 +52,7 @@ void PlayerPiece::movePlayerTo(qreal x, qreal y)
 void PlayerPiece::setupTurnTrue()
 {
     GameSettings::isHumanTurn = true;
-    setClickAndDragFlags();
+    setClickAndDragFlags(true);
 }
 
 void PlayerPiece::toOriginalPosition()

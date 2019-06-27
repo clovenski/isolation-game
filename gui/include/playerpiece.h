@@ -32,9 +32,7 @@ public:
     void setNewPixmap(QString fileName);
 
     // set the flags to make this object click and draggable
-    void setClickAndDragFlags();
-
-
+    void setClickAndDragFlags(bool b);
 
     // call this when setting up beginning positions
     // put the player piece is it's new position

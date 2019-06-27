@@ -61,11 +61,8 @@ private:
      * the human, and computer players respectively.
      */
     PlayerPiece *humanPlayer;
-    PlayerPiece *computerPlayer;
-
-    Engine *ai;
-
     AiPiece *aiPiece = new AiPiece();
+    Engine *ai;
 
     ConfirmForm *backForm;
     ConfirmForm *resetForm;
