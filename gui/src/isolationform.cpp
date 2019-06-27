@@ -83,7 +83,6 @@ IsolationForm::IsolationForm(QWidget *parent) :
     QObject::connect(humanPlayer, SIGNAL(mouseReleased()), this, SLOT(removeValidMoves()));
 
     QObject::connect(this, SIGNAL(playerMoved()), this, SLOT(moveComputer()));
-    QObject::connect(this, SIGNAL(computerMoved()), this, SLOT(checkTerminalState()));
 }
 
 IsolationForm::~IsolationForm()
@@ -95,6 +94,7 @@ IsolationForm::~IsolationForm()
 void IsolationForm::woodBoardColors(){
     QColor color1 = QColor();
     color1.setNamedColor("#DEB887");
+
     // second colour
     QColor color2 = QColor();
     color2.setNamedColor("#ae773f");
@@ -243,8 +243,6 @@ void IsolationForm::movePlayer()
             // Make original position blocked off, and show it visually
             deleteBoardSquare(static_cast<int>(humanPlayer->getOriginalY()) / GameSettings::pixelSize,
                         static_cast<int>(humanPlayer->getOriginalX()) / GameSettings::pixelSize);
-            qDebug() << "X: " << boardSquares[playerMove.row][playerMove.col].x
-                     << " Y: " << boardSquares[playerMove.row][playerMove.col].y;
 
             // Moves the player and changes the original position coordinates.
             humanPlayer->movePlayerTo(boardSquares[playerMove.row][playerMove.col].x,
@@ -273,10 +271,11 @@ void IsolationForm::movePlayer()
 
             GameSettings::isHumanTurn = false;
             checkTerminalState();
+
+            // emit and tell this/isolationForm to do the computer's move
             emit playerMoved();
         } catch(const std::out_of_range e)
         {
-            qDebug() << "Invalid Move.";    //
             humanPlayer->toOriginalPosition();
             return;
         }
@@ -320,7 +319,7 @@ void IsolationForm::moveComputer()
         ui->textBrowser_moves->moveCursor(QTextCursor::End);
 
         humanPlayer->setupTurnTrue();
-        emit computerMoved();
+        checkTerminalState();
     }
 }
 

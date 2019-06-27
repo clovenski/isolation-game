@@ -89,11 +89,12 @@ signals:
     void back();
     void reset();
     void playerMoved();
-    void computerMoved();
 
 public slots:
     void movePlayer();
     void moveComputer();
+
+    // check if the game is over. If not, continue and highlight next person's turn.
     void checkTerminalState();
 
     // display the valid moves for the human player on the scene
