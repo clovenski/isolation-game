@@ -31,13 +31,10 @@ public:
 //    bool done;
 
 private:
-    Ui::IsolationForm *ui;
-    QGraphicsScene *scene;
-
-    // TODO use struct, position, in engine?
     struct BoardSquare
     {
-        // the x and y position of the board from the top left point
+        // the x and y position of the board in the graphical scene
+        // from the top left point
         int x;
         int y;
 
@@ -56,6 +53,9 @@ private:
     BoardSquare boardSquares[GameSettings::boardSize]
                             [GameSettings::boardSize];
 
+    Ui::IsolationForm *ui;
+    QGraphicsScene *scene;
+
     /*
      * the pieces on the board that are controlled by
      * the human, and computer players respectively.
@@ -64,8 +64,13 @@ private:
     AiPiece *aiPiece = new AiPiece();
     Engine *ai;
 
+    // the valid moves of the human player displayed on the scene
+    std::vector<QGraphicsRectItem *> validSquares;
+
+    // the forms that the player must confirm to either go back or reset board
     ConfirmForm *backForm;
     ConfirmForm *resetForm;
+
     int turnNumber;
 
     // deletes the graphical board square
@@ -91,6 +96,10 @@ public slots:
     void moveComputer();
     void checkTerminalState();
 
+    // display the valid moves for the human player on the scene
+    void displayValidMoves();
+    // remove the valid moves for the human player on the scene
+    void removeValidMoves();
 
 private slots:
     void on_backButton_clicked();

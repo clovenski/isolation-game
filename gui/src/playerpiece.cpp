@@ -72,27 +72,21 @@ qreal PlayerPiece::getOriginalY()
 
 void PlayerPiece::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-//    if(GameSettings::isHumanTurn) {
-//        setPos(QCursor::pos());
-//        update(boundingRect());
-//    }
+    emit mousePressed();
 }
 
 void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if(GameSettings::isHumanTurn)
     {
-        qDebug() << this->x() << " mRE " << this->y();
-        QGraphicsItem::mouseReleaseEvent(event);
-
-//        originalX = this->x();
-//        originalY = this->y();
-
         emit positionChanged();
     } else
     {
         toOriginalPosition();
     }
+
+    QGraphicsItem::mouseReleaseEvent(event);
+    emit mouseReleased();
 }
 
 // pure virtual functions

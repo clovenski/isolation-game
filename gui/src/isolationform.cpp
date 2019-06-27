@@ -78,6 +78,9 @@ IsolationForm::IsolationForm(QWidget *parent) :
     resetForm->setLabel("Are you sure you want to reset the game?");
 
     QObject::connect(humanPlayer, SIGNAL(positionChanged()),this, SLOT(movePlayer()));
+    QObject::connect(humanPlayer, SIGNAL(mousePressed()),
+                     this, SLOT(displayValidMoves()));
+    QObject::connect(humanPlayer, SIGNAL(mouseReleased()), this, SLOT(removeValidMoves()));
 
     QObject::connect(this, SIGNAL(playerMoved()), this, SLOT(moveComputer()));
     QObject::connect(this, SIGNAL(computerMoved()), this, SLOT(checkTerminalState()));
@@ -94,7 +97,7 @@ void IsolationForm::woodBoardColors(){
     color1.setNamedColor("#DEB887");
     // second colour
     QColor color2 = QColor();
-    color2.setNamedColor("#9f6934");
+    color2.setNamedColor("#ae773f");
 
     changeBoardColors(color1, color2);
 }
@@ -116,7 +119,7 @@ void IsolationForm::startGame()
     ui->textBrowser_moves->append("      Player 1 \t Player 2\n");
     turnNumber = 1;
     if(GameSettings::computerFirst)
-        moveComputer();
+        moveComputer(); 
 }
 
 void IsolationForm::deleteBoardSquare(int i, int j)
@@ -197,6 +200,15 @@ QString IsolationForm::positionToText(int col, int row)
     }
 
     return str;
+}
+
+void IsolationForm::removeValidMoves()
+{
+    for(auto square: validSquares)
+    {
+        delete square;
+    }
+    validSquares.clear();
 }
 
 // public slots
@@ -312,6 +324,23 @@ void IsolationForm::moveComputer()
     }
 }
 
+void IsolationForm::displayValidMoves()
+{
+    auto positions = ai->getChoices();
+    QColor color = QColor();
+    color.setNamedColor("#39c973");
+    QBrush brush = QBrush(Qt::SolidPattern);
+    brush.setColor(color);
+
+    for(auto pos: positions)
+    {
+        validSquares.push_back(scene->addRect(pos.col * GameSettings::pixelSize,
+                                              pos.row * GameSettings::pixelSize,
+                                              GameSettings::pixelSize,
+                                              GameSettings::pixelSize,
+                                              QPen(Qt::black),brush));
+    }
+}
 
 void IsolationForm::checkTerminalState()
 {

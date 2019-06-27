@@ -63,6 +63,8 @@ protected:
 signals:
     void positionChanged();
     void playerIsDrawn();
+    void mousePressed();
+    void mouseReleased();
 
 private slots:
     void changePosition(QPointF); // TODO am i using this?
