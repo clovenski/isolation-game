@@ -30,10 +30,25 @@ void Engine::processTimeLimit(double timeLimit) {
     Minimax::earlyStopLimit = earlyStopLimit;
 }
 
-Engine::Engine(bool xFirst, double timeLimit) : state(xFirst) {
+void Engine::processDifficulty(int difficulty) {
+    double timeLimit;
+
+    if (difficulty == 1) { // medium
+        processTimeLimit(2.0);
+    } else if (difficulty == 2) { // hard
+        processTimeLimit(3.0);
+    } else { // difficulty == 0 or anything else -> easy
+        processTimeLimit(2.0);
+        easyDiff = true;
+        startDepth = 2;
+    }
+}
+
+Engine::Engine(bool xFirst, int difficulty) : state(xFirst) {
+    processDifficulty(difficulty);
+
     this->xFirst = xFirst;
     turnCount = 0;
-    processTimeLimit(timeLimit);
 
     // init debugging fields
     bestDepth = bestUtility = transTableSize = 0;
@@ -45,8 +60,8 @@ void Engine::setWhoFirst(bool xFirst) {
     this->xFirst = xFirst;
 }
 
-void Engine::setTimeLimit(double timeLimit) {
-    processTimeLimit(timeLimit);
+void Engine::setDifficulty(int difficulty) {
+    processDifficulty(difficulty);
 }
 
 vector<Position> Engine::getChoices() {
@@ -57,7 +72,7 @@ Position Engine::getCompMove() {
     if (!state.isTerminal()) {
         chrono::high_resolution_clock::time_point startTime, endTime;
         Position compMove, bestCompMove;
-        int i;
+        int i, endDepth = easyDiff ? 2 : 40;
 
         startTime = chrono::high_resolution_clock::now();
 
@@ -71,7 +86,7 @@ Position Engine::getCompMove() {
         } else {
             bestDepth = startDepth;
             bestUtility = Minimax::getMaxUtility();
-            for (i = startDepth + 1; i <= 40; i++) {
+            for (i = startDepth + 1; i <= endDepth; i++) {
                 bestCompMove = Minimax::search(true, state, i);
                 if (bestCompMove.row != -1 && bestCompMove.col != -1) {
                     bestDepth = i;

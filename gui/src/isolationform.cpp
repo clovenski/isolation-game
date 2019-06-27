@@ -41,13 +41,13 @@ IsolationForm::IsolationForm(QWidget *parent) :
     // and set their posiitons based on who's first
     if(GameSettings::playerFirst)
     {
-        ai = new Engine(false, 2.0);
+        ai = new Engine(false, 0);
         aiPiece = new AiPiece();
         humanPlayer->setNewPixmap(":/images/assets/queenwhite.png"); 
         ui->label_player1->setText("Player 1: Human");
         ui->label_player2->setText("Player 2: Computer");
     } else {
-        ai = new Engine(true, 2.0);
+        ai = new Engine(true, 0);
         aiPiece = new AiPiece();
         humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
         ui->label_player1->setText("Player 1: Computer");
@@ -86,7 +86,7 @@ void IsolationForm::woodBoardColors(){
     color1.setNamedColor("#DEB887");
     // second colour
     QColor color2 = QColor();
-    color2.setNamedColor("#F5DEB3");
+    color2.setNamedColor("#9f6934");
 
     changeBoardColors(color1, color2);
 }
@@ -281,7 +281,7 @@ void IsolationForm::moveComputer()
 
         // output the computer's move to the textbox, according to chess notation
         QString str = QString();
-        if(!GameSettings::playerFirst)
+        if(GameSettings::computerFirst)
         {
             if(turnNumber <= 9)
                 str.append(" ");
@@ -291,7 +291,7 @@ void IsolationForm::moveComputer()
         }
 
         str.append(positionToText(aiMove.col, aiMove.row));
-        if(GameSettings::playerFirst)
+        if(!GameSettings::computerFirst)
         {
             str.append("\n");
             turnNumber++;
@@ -315,7 +315,7 @@ void IsolationForm::checkTerminalState()
     if(ai->terminalState())
     {
         humanPlayer->setClickAndDragFlags(false);
-        ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " has won!");
+        ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " won!");
     }
 }
 
