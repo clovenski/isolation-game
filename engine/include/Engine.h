@@ -29,6 +29,8 @@ class Engine {
         double earlyStopLimit;
         Position getRandCompMove();
         void processTimeLimit(double);
+        void processDifficulty(int);
+        bool easyDiff;
         // debugging fields
         int bestDepth;
         int bestUtility;
@@ -37,15 +39,25 @@ class Engine {
     public:
         /* Construct a new engine.
          *      bool - whether or not player X (computer) goes first
-         *      double - time limit for AI to think (in seconds)
-         *          ie. 20.0 for 20 seconds
-         *          must be >= 1.0, otherwise defaults to 2.0 seconds
+         *      int - difficulty of the game, affecting how the ai
+         *            will think, 0 for easy, 1 for medium, 2 for hard;
+         *            defaults to 0 if none of these integers are given
          * 
          * The state of the game is in its initial state
          * with the player that goes first positioned
          * at the top-left, other player at the bottom-right.
+         * 
+         * Difficulties:
+         * Easy - AI is limited in its search tree by depth: 2
+         *        In other words, it can only think 2 moves ahead.
+         * Medium - AI is limited in time: 3 seconds
+         *          In other words, it has less than 3 seconds to
+         *          come up with a move to make.
+         * Hard - AI is limited in time: 5 seconds
+         *        In other words, it has less than 5 seconds to
+         *        come up with a move to make.
          */ 
-        Engine(bool xFirst = true, double timeLimit = 2.0);
+        Engine(bool xFirst = true, int difficulty = 0);
 
         /* Set who goes first; true for player X (computer) goes first,
          * false for player O (user) goes first.
@@ -55,14 +67,21 @@ class Engine {
          */
         void setWhoFirst(bool);
 
-        /* Set the time limit for the AI to think (in seconds)
-         * Must be >= 1.0, otherwise defaults to 2.0 seconds.
+        /* Set the difficulty of the AI. Pass 0 for easy,
+         * 1 for medium or 2 for hard. Anything else will
+         * default to easy difficulty.
          * 
-         * This would have an immediate effect on how much time
-         * the AI has to think to make a move. Subsequent calls
-         * to Engine.getCompMove() would use the new time limit.
+         * Difficulties:
+         * Easy - AI is limited in its search tree by depth: 2
+         *        In other words, it can only think 2 moves ahead.
+         * Medium - AI is limited in time: 3 seconds
+         *          In other words, it has less than 3 seconds to
+         *          come up with a move to make.
+         * Hard - AI is limited in time: 5 seconds
+         *        In other words, it has less than 5 seconds to
+         *        come up with a move to make.
          */
-        void setTimeLimit(double);
+        void setDifficulty(int);
 
         /* Get a list of all the possible moves for the player
          * at the current state of the game.
