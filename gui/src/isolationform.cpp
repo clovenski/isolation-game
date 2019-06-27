@@ -319,6 +319,7 @@ void IsolationForm::checkTerminalState()
     {
         humanPlayer->setClickAndDragFlags(false);
         ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " won!");
+        ui->textBrowser_moves->moveCursor(QTextCursor::End);
     }
 }
 
