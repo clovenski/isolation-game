@@ -84,6 +84,7 @@ private:
 
     // returns grid position in columns and rows to standard chess notation
     QString positionToText(int col, int row);
+    void moveComputer();
 
 signals:
     void back();
@@ -92,7 +93,7 @@ signals:
 
 public slots:
     void movePlayer();
-    void moveComputer();
+
 
     // check if the game is over. If not, continue and highlight next person's turn.
     void checkTerminalState();

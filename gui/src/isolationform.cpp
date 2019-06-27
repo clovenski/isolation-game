@@ -70,19 +70,21 @@ IsolationForm::IsolationForm(QWidget *parent) :
 
     // add the back and reset forms that user must confirm to proceed
     backForm = new ConfirmForm();
-    QObject::connect(backForm, SIGNAL(yesClicked()), this, SLOT(goBack()));
+    QObject::connect(backForm, SIGNAL(yesClicked()),
+                     this, SLOT(goBack()));
     backForm->setLabel("Are you sure you want to go back?");
 
     resetForm = new ConfirmForm();
-    QObject::connect(resetForm, SIGNAL(yesClicked()), this, SLOT(goReset()));
+    QObject::connect(resetForm, SIGNAL(yesClicked()),
+                     this, SLOT(goReset()));
     resetForm->setLabel("Are you sure you want to reset the game?");
 
-    QObject::connect(humanPlayer, SIGNAL(positionChanged()),this, SLOT(movePlayer()));
+    QObject::connect(humanPlayer, SIGNAL(positionChanged()),
+                     this, SLOT(movePlayer()));
     QObject::connect(humanPlayer, SIGNAL(mousePressed()),
                      this, SLOT(displayValidMoves()));
-    QObject::connect(humanPlayer, SIGNAL(mouseReleased()), this, SLOT(removeValidMoves()));
-
-    QObject::connect(this, SIGNAL(playerMoved()), this, SLOT(moveComputer()));
+    QObject::connect(humanPlayer, SIGNAL(mouseReleased()),
+                     this, SLOT(removeValidMoves()));
 }
 
 IsolationForm::~IsolationForm()
@@ -202,6 +204,47 @@ QString IsolationForm::positionToText(int col, int row)
     return str;
 }
 
+void IsolationForm::moveComputer()
+{
+    if(!ai->terminalState())
+    {
+        deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
+                          static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
+        Position aiMove = ai->getCompMove();
+        qDebug().noquote() << QString::fromStdString(ai->stateString())
+                           << QString::fromStdString("Best depth: " + ai->debugCompMove("depth") + "\n")
+                           << QString::fromStdString("Best utility: " + ai->debugCompMove("utility") + "\n")
+                           << QString::fromStdString("Table size: " + ai->debugCompMove("table size") + "\n")
+                           << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
+        aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
+                        aiMove.row * GameSettings::pixelSize);
+
+        // output the computer's move to the textbox, according to chess notation
+        QString str = QString();
+        if(GameSettings::computerFirst)
+        {
+            if(turnNumber <= 9)
+                str.append(" ");
+            str.append(QString::number(turnNumber) + ".           " );
+        } else {
+            str.append(" \t ");
+        }
+
+        str.append(positionToText(aiMove.col, aiMove.row));
+        if(!GameSettings::computerFirst)
+        {
+            str.append("\n");
+            turnNumber++;
+        }
+        ui->textBrowser_moves->moveCursor(QTextCursor::End);
+        ui->textBrowser_moves->insertPlainText(str);
+        ui->textBrowser_moves->moveCursor(QTextCursor::End);
+
+        humanPlayer->setupTurnTrue();
+        checkTerminalState();
+    }
+}
+
 void IsolationForm::removeValidMoves()
 {
     for(auto square: validSquares)
@@ -271,55 +314,12 @@ void IsolationForm::movePlayer()
 
             GameSettings::isHumanTurn = false;
             checkTerminalState();
-
-            // emit and tell this/isolationForm to do the computer's move
-            emit playerMoved();
+            moveComputer();
         } catch(const std::out_of_range e)
         {
             humanPlayer->toOriginalPosition();
             return;
         }
-    }
-}
-
-void IsolationForm::moveComputer()
-{
-    if(!ai->terminalState())
-    {
-        deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
-                          static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
-        Position aiMove = ai->getCompMove();
-        qDebug().noquote() << QString::fromStdString(ai->stateString())
-                           << QString::fromStdString("Best depth: " + ai->debugCompMove("depth") + "\n")
-                           << QString::fromStdString("Best utility: " + ai->debugCompMove("utility") + "\n")
-                           << QString::fromStdString("Table size: " + ai->debugCompMove("table size") + "\n")
-                           << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
-        aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
-                        aiMove.row * GameSettings::pixelSize);
-
-        // output the computer's move to the textbox, according to chess notation
-        QString str = QString();
-        if(GameSettings::computerFirst)
-        {
-            if(turnNumber <= 9)
-                str.append(" ");
-            str.append(QString::number(turnNumber) + ".           " );
-        } else {
-            str.append(" \t ");
-        }
-
-        str.append(positionToText(aiMove.col, aiMove.row));
-        if(!GameSettings::computerFirst)
-        {
-            str.append("\n");
-            turnNumber++;
-        }
-        ui->textBrowser_moves->moveCursor(QTextCursor::End);
-        ui->textBrowser_moves->insertPlainText(str);
-        ui->textBrowser_moves->moveCursor(QTextCursor::End);
-
-        humanPlayer->setupTurnTrue();
-        checkTerminalState();
     }
 }
 
