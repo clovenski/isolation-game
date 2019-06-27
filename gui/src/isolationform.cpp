@@ -86,7 +86,7 @@ void IsolationForm::woodBoardColors(){
     color1.setNamedColor("#DEB887");
     // second colour
     QColor color2 = QColor();
-    color2.setNamedColor("#F5DEB3");
+    color2.setNamedColor("#9f6934");
 
     changeBoardColors(color1, color2);
 }
@@ -201,7 +201,6 @@ void IsolationForm::movePlayer()
     || humanPlayer->x() < -GameSettings::pixelSize / 2
     || humanPlayer->y() < -GameSettings::pixelSize / 2)
     {
-        qDebug() << "Putting to original position";
         humanPlayer->toOriginalPosition();
     } else {
         Position playerMove ={-1,-1};
@@ -257,7 +256,7 @@ void IsolationForm::movePlayer()
             emit playerMoved();
         } catch(const std::out_of_range e)
         {
-            qDebug() << "Invalid Move.";
+            qDebug() << "Invalid Move.";    //
             humanPlayer->toOriginalPosition();
             return;
         }
@@ -300,12 +299,8 @@ void IsolationForm::moveComputer()
         ui->textBrowser_moves->insertPlainText(str);
         ui->textBrowser_moves->moveCursor(QTextCursor::End);
 
-        qDebug() << "Computer Move: " << aiMove.col << ", "<< aiMove.row;
         humanPlayer->setupTurnTrue();
         emit computerMoved();
-    } else
-    {
-        qDebug() << QString::fromStdString(ai->getWinner()); // TODO put in textbrowser
     }
 }
 
@@ -315,14 +310,12 @@ void IsolationForm::checkTerminalState()
     if(ai->terminalState())
     {
         humanPlayer->setClickAndDragFlags(false);
-        ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " has won!");
+        ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " won!");
     }
 }
 
 void IsolationForm::goBack()
 {
-    qDebug() << "goBack inside isolationForm";
-//    done = true;
     emit back();
 }
 
@@ -344,6 +337,7 @@ void IsolationForm::goReset()
     ui->textBrowser_moves->clear();
     startGame();
 }
+
 // push buttons
 
 void IsolationForm::on_backButton_clicked()
