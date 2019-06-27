@@ -105,7 +105,7 @@ void IsolationForm::changeBoardColors(QColor color1, QColor color2)
 
 void IsolationForm::startGame()
 {
-    ui->textBrowser_moves->append("Start of a New Game");
+    ui->textBrowser_moves->append("      Player 1 \t Player 2\n");
     turnNumber = 1;
     if(GameSettings::computerFirst)
         moveComputer();
@@ -233,14 +233,24 @@ void IsolationForm::movePlayer()
 
             // output to the textbox the move the human player did.
             QString str = QString();
-            str.append(QString::number(turnNumber) + ". " );
             if(GameSettings::playerFirst)
-                str.append("Player 1: ");
-            else
-                str.append("Player 2: ");
+            {
+                if(turnNumber <= 9)
+                    str.append(" ");
+                str.append(QString::number(turnNumber) + ".           " );
+            } else {
+                str.append(" \t ");
+            }
+
             str.append(positionToText(playerMove.col, playerMove.row));
-            ui->textBrowser_moves->append(str);
-            turnNumber++;
+            if(!GameSettings::playerFirst)
+            {
+                str.append("\n");
+                turnNumber++;
+            }
+            ui->textBrowser_moves->moveCursor(QTextCursor::End);
+            ui->textBrowser_moves->insertPlainText(str);
+            ui->textBrowser_moves->moveCursor(QTextCursor::End);
 
             GameSettings::isHumanTurn = false;
             checkTerminalState();
@@ -271,14 +281,24 @@ void IsolationForm::moveComputer()
 
         // output the computer's move to the textbox, according to chess notation
         QString str = QString();
-        str.append(QString::number(turnNumber) + ". " );
-        if(GameSettings::computerFirst)
-            str.append("Player 1: ");
-        else
-            str.append("Player 2: ");
-        str.append( positionToText(aiMove.col, aiMove.row));
-        ui->textBrowser_moves->append(str);
-        turnNumber++;
+        if(!GameSettings::playerFirst)
+        {
+            if(turnNumber <= 9)
+                str.append(" ");
+            str.append(QString::number(turnNumber) + ".           " );
+        } else {
+            str.append(" \t ");
+        }
+
+        str.append(positionToText(aiMove.col, aiMove.row));
+        if(GameSettings::playerFirst)
+        {
+            str.append("\n");
+            turnNumber++;
+        }
+        ui->textBrowser_moves->moveCursor(QTextCursor::End);
+        ui->textBrowser_moves->insertPlainText(str);
+        ui->textBrowser_moves->moveCursor(QTextCursor::End);
 
         qDebug() << "Computer Move: " << aiMove.col << ", "<< aiMove.row;
         humanPlayer->setupTurnTrue();
@@ -319,7 +339,9 @@ void IsolationForm::goReset()
 
     GameSettings::isHumanTurn = GameSettings::playerFirst;
 
-    ui->textBrowser_moves->append("");
+    humanPlayer->setClickAndDragFlags(true);
+
+    ui->textBrowser_moves->clear();
     startGame();
 }
 // push buttons
