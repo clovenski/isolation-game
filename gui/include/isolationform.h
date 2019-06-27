@@ -89,7 +89,6 @@ private:
 signals:
     void back();
     void reset();
-    void playerMoved();
 
 public slots:
     void movePlayer();
