@@ -37,17 +37,25 @@ IsolationForm::IsolationForm(QWidget *parent) :
     // add the human player's pieces
     humanPlayer = new PlayerPiece();
 
+    // set the difficulty based on the game settings set in title screen
+    // 0 being easy, 1 being medium, 2 being hard.
+    int difficulty = 0;
+    if(GameSettings::medium)
+        difficulty = 1;
+    else if(GameSettings::hard)
+        difficulty = 2;
+
     // create the ai for the computer player, set player images,
     // and set their posiitons based on who's first
     if(GameSettings::playerFirst)
     {
-        ai = new Engine(false, 0);
+        ai = new Engine(false, difficulty);
         aiPiece = new AiPiece();
         humanPlayer->setNewPixmap(":/images/assets/queenwhite.png"); 
         ui->label_player1->setText("Player 1: Human");
         ui->label_player2->setText("Player 2: Computer");
     } else {
-        ai = new Engine(true, 0);
+        ai = new Engine(true, difficulty);
         aiPiece = new AiPiece();
         humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
         ui->label_player1->setText("Player 1: Computer");
