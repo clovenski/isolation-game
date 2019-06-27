@@ -44,10 +44,14 @@ IsolationForm::IsolationForm(QWidget *parent) :
         ai = new Engine(false, 2.0);
         aiPiece = new AiPiece();
         humanPlayer->setNewPixmap(":/images/assets/queenwhite.png"); 
+        ui->label_player1->setText("Player 1: Human");
+        ui->label_player2->setText("Player 2: Computer");
     } else {
         ai = new Engine(true, 2.0);
         aiPiece = new AiPiece();
         humanPlayer->setNewPixmap(":/images/assets/queenblack.png");
+        ui->label_player1->setText("Player 1: Computer");
+        ui->label_player2->setText("Player 2: Human");
     }
 
     moveToStartingPositions();
