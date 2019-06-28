@@ -326,18 +326,17 @@ void IsolationForm::movePlayer()
 void IsolationForm::displayValidMoves()
 {
     auto positions = ai->getChoices();
-    QColor color = QColor();
-    color.setNamedColor("#39c973");
+    QColor color = QColor("#40000000"); // #7032cd32 for green, #AARRGGBB, AA for transparency
     QBrush brush = QBrush(Qt::SolidPattern);
     brush.setColor(color);
 
     for(auto pos: positions)
     {
-        validSquares.push_back(scene->addRect(pos.col * GameSettings::pixelSize,
-                                              pos.row * GameSettings::pixelSize,
-                                              GameSettings::pixelSize,
-                                              GameSettings::pixelSize,
-                                              QPen(Qt::black),brush));
+        validSquares.push_back(scene->addEllipse(pos.col * GameSettings::pixelSize + 24,
+                                                 pos.row * GameSettings::pixelSize + 24,
+                                                 GameSettings::pixelSize / 3,
+                                                 GameSettings::pixelSize / 3,
+                                                 QPen(QColor("transparent")),brush));
     }
 }
 

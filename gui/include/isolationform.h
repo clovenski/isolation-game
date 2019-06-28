@@ -65,7 +65,7 @@ private:
     Engine *ai;
 
     // the valid moves of the human player displayed on the scene
-    std::vector<QGraphicsRectItem *> validSquares;
+    std::vector<QGraphicsEllipseItem *> validSquares;
 
     // the forms that the player must confirm to either go back or reset board
     ConfirmForm *backForm;
