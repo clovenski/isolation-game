@@ -20,8 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
-    // make the ui a fixed size
+    // make the ui a fixed size, and remove context help button
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+    setWindowFlag(Qt::WindowContextHelpButtonHint, false);
     ui->setupUi(this);
 
     stackedWidget = new QStackedWidget();
@@ -81,5 +82,5 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     emit closed();
     QWidget::closeEvent(event);
-//    QCoreApplication::quit();
+    QCoreApplication::quit();
 }
