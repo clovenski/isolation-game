@@ -12,6 +12,7 @@
 #include <QBrush>
 #include <QColor>
 #include <QGraphicsObject>
+#include <QApplication>
 
 namespace Ui {
 class IsolationForm;
@@ -95,6 +96,9 @@ private:
 
     // gets the computer's move from the ai engine, and moves them there.
     void moveComputer();
+
+    // highlight the current player's turn in yellow, and un-highlight the other.
+    void highlightCurrentTurn();
 
 signals:
     void back();

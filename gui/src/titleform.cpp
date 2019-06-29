@@ -65,6 +65,7 @@ void TitleForm::on_startButton_clicked()
         ui->label_startInfo->setStyleSheet("QLabel { color : black; }");
         ui->label_startInfo->setText("Starting Game.");
 
+        QApplication::processEvents();
         emit startButtonClicked();
     }else
     {

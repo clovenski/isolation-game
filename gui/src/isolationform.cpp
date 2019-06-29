@@ -98,6 +98,7 @@ void IsolationForm::startGame()
 {
     ui->textBrowser_moves->append("      Player 1 \t Player 2\n");
     turnNumber = 1;
+    highlightCurrentTurn();
     if(GameSettings::computerFirst)
         moveComputer(); 
 }
@@ -209,6 +210,9 @@ void IsolationForm::moveComputer()
 {
     if(!ai->terminalState())
     {
+        // process the events to let the GUI go to the next visual state, before letting
+        // the computer make it's move
+        QApplication::processEvents();
         deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
                           static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
         Position aiMove = ai->getCompMove();
@@ -244,6 +248,22 @@ void IsolationForm::moveComputer()
         humanPlayer->setupTurnTrue();
         checkTerminalState();
     }
+}
+
+void IsolationForm::highlightCurrentTurn()
+{
+    if((GameSettings::isHumanTurn && GameSettings::playerFirst)
+            || (!GameSettings::isHumanTurn && GameSettings::computerFirst))
+    {
+        ui->label_player1->setStyleSheet("QLabel { background-color : yellow;}");
+        ui->label_player2->setStyleSheet("QLabel { background-color : light gray;}");
+    } else if ((GameSettings::isHumanTurn && GameSettings::computerFirst)
+            || (!GameSettings::isHumanTurn && GameSettings::playerFirst))
+    {
+        ui->label_player1->setStyleSheet("QLabel { background-color : light gray;}");
+        ui->label_player2->setStyleSheet("QLabel { background-color : yellow;}");
+    }
+
 }
 
 void IsolationForm::removeValidMoves()
@@ -345,9 +365,16 @@ void IsolationForm::displayValidMoves()
 
 void IsolationForm::checkTerminalState()
 {
+    highlightCurrentTurn();
     if(ai->terminalState())
     {
         humanPlayer->setClickAndDragFlags(false);
+
+        // un-highlight the current player's turn, as the game is over
+        ui->label_player1->setStyleSheet("QLabel { background-color : light gray;}");
+        ui->label_player2->setStyleSheet("QLabel { background-color : light gray;}");
+
+        // display the winner of the game
         ui->textBrowser_moves->append(QString::fromStdString(ai->getWinner()) + " won!");
         ui->textBrowser_moves->moveCursor(QTextCursor::End);
     }
