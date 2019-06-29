@@ -76,16 +76,15 @@ void PlayerPiece::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void PlayerPiece::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    emit mouseReleased();
     if(GameSettings::isHumanTurn)
     {
         emit positionChanged();
     } else
     {
         toOriginalPosition();
-    }
-
+    }  
     QGraphicsItem::mouseReleaseEvent(event);
-    emit mouseReleased();
 }
 
 // pure virtual functions
