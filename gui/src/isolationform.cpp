@@ -216,11 +216,11 @@ void IsolationForm::moveComputer()
         deleteBoardSquare(static_cast<int>(aiPiece->y()) / GameSettings::pixelSize,
                           static_cast<int>(aiPiece->x()) / GameSettings::pixelSize);
         Position aiMove = ai->getCompMove();
-        qDebug().noquote() << QString::fromStdString(ai->stateString())
-                           << QString::fromStdString("Best depth: " + ai->debugCompMove("depth") + "\n")
-                           << QString::fromStdString("Best utility: " + ai->debugCompMove("utility") + "\n")
-                           << QString::fromStdString("Table size: " + ai->debugCompMove("table size") + "\n")
-                           << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
+//        qDebug().noquote() << QString::fromStdString(ai->stateString())
+//                           << QString::fromStdString("Best depth: " + ai->debugCompMove("depth") + "\n")
+//                           << QString::fromStdString("Best utility: " + ai->debugCompMove("utility") + "\n")
+//                           << QString::fromStdString("Table size: " + ai->debugCompMove("table size") + "\n")
+//                           << QString::fromStdString("Minimax run time: " + ai->debugCompMove("run time") + "\n");
         aiPiece->setPos(aiMove.col * GameSettings::pixelSize,
                         aiMove.row * GameSettings::pixelSize);
 
@@ -295,7 +295,7 @@ void IsolationForm::movePlayer()
         playerMove.row = (humanPlayer->y() + (GameSettings::pixelSize / 2)) / divider;
         playerMove.col = (humanPlayer->x() + (GameSettings::pixelSize / 2)) / divider;
 
-        qDebug().noquote() << "Player's move: "<<playerMove.col << ", "<< playerMove.row;
+//        qDebug().noquote() << "Player's move: "<<playerMove.col << ", "<< playerMove.row;
 
         // tries out if the position the human decided on is a viable position.
         // if not, return.
