@@ -32,6 +32,7 @@ void Engine::processTimeLimit(double timeLimit) {
 
 void Engine::processDifficulty(int difficulty) {
     double timeLimit;
+    easyDiff = false;
 
     if (difficulty == 1) { // medium
         processTimeLimit(2.0);
