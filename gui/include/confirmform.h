@@ -14,13 +14,13 @@ class ConfirmForm : public QWidget
 public:
     explicit ConfirmForm(QWidget *parent = nullptr);
     ~ConfirmForm();
-
     void setLabel(QString str);
+
 signals:
     void yesClicked();
+
 private slots:
     void on_yesButton_clicked();
-
     void on_noButton_clicked();
 
 private:

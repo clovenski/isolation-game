@@ -42,10 +42,6 @@ private slots:
 private:
     Ui::TitleForm *ui;
 
-    // the board's corresponding view and scene
-//    QGraphicsView *view;
-//    QGraphicsScene *scene;
-
     // the form where the isolation game is played
     IsolationForm *isoForm;
     bool isoFormCreated;

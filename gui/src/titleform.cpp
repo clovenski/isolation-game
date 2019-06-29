@@ -72,7 +72,6 @@ void TitleForm::on_startButton_clicked()
         ui->label_startInfo->setStyleSheet("QLabel { color : red; }");
         ui->label_startInfo->setText("Must Enter Proper Settings.");
     }
-
 }
 
 

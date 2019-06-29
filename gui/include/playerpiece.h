@@ -20,8 +20,6 @@
 #include <QRectF>
 #include <QStyleOptionGraphicsItem>
 
-
-//TODO try QGraphicsObject
 class PlayerPiece : public QGraphicsObject
 {
     Q_OBJECT

@@ -20,7 +20,6 @@ PlayerPiece::PlayerPiece(QGraphicsItem *parent)
 
     originalX = this->x();
     originalY = this->y();
-
 }
 
 void PlayerPiece::setNewPixmap(QString fileName)

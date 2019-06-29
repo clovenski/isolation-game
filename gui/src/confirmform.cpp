@@ -7,7 +7,6 @@ ConfirmForm::ConfirmForm(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->label->setAlignment(Qt::AlignCenter);
-
 }
 
 ConfirmForm::~ConfirmForm()

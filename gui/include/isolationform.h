@@ -101,6 +101,7 @@ private:
     void highlightCurrentTurn();
 
 signals:
+    // signals to go back to the title screen or reset the game board and AI.
     void back();
     void reset();
 
