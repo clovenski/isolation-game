@@ -10,7 +10,7 @@ AI by [Joel Tengco](https://clovenski.github.io/resume/)
 
 ## Qt License
 
-This application was developed using the open source version of [Qt Creator](https://www.qt.io/). As such, this version of Qt Creator is licensed under the LGPLv3 license, which can be viewed in [Qt-License.txt](Qt-License.txt). The source code of Qt can be found alongside the releases of this application.
+This application was developed using the open source version of [Qt Creator](https://www.qt.io/). As such, this version of Qt Creator is licensed under the LGPLv3 license, which can be viewed in [Qt-License.txt](Qt-License.txt). The source code of Qt can be found [here](https://github.com/clovenski/isolation-game/releases/tag/v1.0.0): `qtbase-5.12.3.tar.gz` or `qtbase-5.12.3.zip`.
 
 ## Usage
 
