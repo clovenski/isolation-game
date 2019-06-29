@@ -12,7 +12,6 @@
 #include <QBrush>
 #include <QColor>
 #include <QGraphicsObject>
-#include <QLayout>
 
 namespace Ui {
 class IsolationForm;
@@ -25,10 +24,12 @@ class IsolationForm : public QWidget
 public:
     explicit IsolationForm(QWidget *parent = nullptr);
     ~IsolationForm();
-    void woodBoardColors();
-    void changeBoardColors(QColor color1, QColor color2);
+
+    /*
+     * Starts the game.
+     * All game settings (Who's first, and difficulty) must be checked beforehand.
+     */
     void startGame();
-//    bool done;
 
 private:
     struct BoardSquare
@@ -76,33 +77,43 @@ private:
     // deletes the graphical board square
     void deleteBoardSquare(int i, int j);
 
-    // moves both human and computer player into their starting positions
+    // moves both human and computer player into their respective starting positions,
+    // based on who is first. First starts top left, second starts bottom right.
     void moveToStartingPositions();
+
+    // setup the default colors of the board that makes it look like solid brown wood.
+    void woodBoardColors();
+
+    // change the board colors, before drawing them in.
+    void changeBoardColors(QColor color1, QColor color2);
 
     // draws the graphical board square
     void drawBoardSquares(QBrush brush1, QBrush brush2);
 
     // returns grid position in columns and rows to standard chess notation
     QString positionToText(int col, int row);
+
+    // gets the computer's move from the ai engine, and moves them there.
     void moveComputer();
 
 signals:
     void back();
     void reset();
 
-public slots:
+private slots:
+    // move the player once they've moved their player piece
+    // also checks if the move is valid.
     void movePlayer();
-
 
     // check if the game is over. If not, continue and highlight next person's turn.
     void checkTerminalState();
 
-    // display the valid moves for the human player on the scene
-    void displayValidMoves();
+    // display the valid moves for the human player on the scene and
     // remove the valid moves for the human player on the scene
+    void displayValidMoves();
     void removeValidMoves();
 
-private slots:
+    // slots for the confirmation forms for going back to title, and reseting the board.
     void on_backButton_clicked();
     void on_resetButton_clicked();
     void goBack();

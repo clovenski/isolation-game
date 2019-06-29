@@ -13,6 +13,7 @@ TitleForm::TitleForm(QWidget *parent) :
     ui->setupUi(this);
     isoFormCreated = false;
 
+    ui->label_startInfo->setText("");
 }
 
 TitleForm::~TitleForm()
@@ -61,10 +62,16 @@ void TitleForm::on_startButton_clicked()
     {
         GameSettings::isHumanTurn = GameSettings::playerFirst;
 
+        ui->label_startInfo->setStyleSheet("QLabel { color : black; }");
+        ui->label_startInfo->setText("Starting Game.");
+
         emit startButtonClicked();
+    }else
+    {
+        ui->label_startInfo->setStyleSheet("QLabel { color : red; }");
+        ui->label_startInfo->setText("Must Enter Proper Settings.");
     }
-    else
-        qDebug() << "Must enter proper settings.";
+
 }
 
 

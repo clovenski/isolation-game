@@ -19,7 +19,7 @@ IsolationForm::IsolationForm(QWidget *parent) :
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     ui->graphicsView->setFixedSize(GameSettings::sceneSize,
-                                   GameSettings::sceneSize); // TODO unnecessary?
+                                   GameSettings::sceneSize);
 
     // setup up the coordinates of each board square while
     for(int i = 0; i < GameSettings::boardSize; i++)
@@ -81,6 +81,8 @@ IsolationForm::IsolationForm(QWidget *parent) :
 
     QObject::connect(humanPlayer, SIGNAL(positionChanged()),
                      this, SLOT(movePlayer()));
+
+    // connects for the displaying and removing of the visual markers of valid moves.
     QObject::connect(humanPlayer, SIGNAL(mousePressed()),
                      this, SLOT(displayValidMoves()));
     QObject::connect(humanPlayer, SIGNAL(mouseReleased()),
@@ -90,30 +92,6 @@ IsolationForm::IsolationForm(QWidget *parent) :
 IsolationForm::~IsolationForm()
 {
     delete ui;
-}
-
-// default colors of the board that makes it look like solid brown wood.
-void IsolationForm::woodBoardColors(){
-    QColor color1 = QColor();
-    color1.setNamedColor("#DEB887");
-
-    // second colour
-    QColor color2 = QColor();
-    color2.setNamedColor("#ae773f");
-
-    changeBoardColors(color1, color2);
-}
-
-void IsolationForm::changeBoardColors(QColor color1, QColor color2)
-{
-    // setup the brushes with regards to their respective colors
-    QBrush brush1 = QBrush(Qt::SolidPattern);
-    brush1.setColor(color1);
-    QBrush brush2 = QBrush(Qt::SolidPattern);
-    brush2.setColor(color2);
-
-    // draw the squares in
-    drawBoardSquares(brush1, brush2);
 }
 
 void IsolationForm::startGame()
@@ -146,6 +124,29 @@ void IsolationForm::moveToStartingPositions()
     aiPiece->setZValue(1);
     humanPlayer->update();
     aiPiece->update();
+}
+
+void IsolationForm::woodBoardColors(){
+    QColor color1 = QColor();
+    color1.setNamedColor("#DEB887");
+
+    // second colour
+    QColor color2 = QColor();
+    color2.setNamedColor("#ae773f");
+
+    changeBoardColors(color1, color2);
+}
+
+void IsolationForm::changeBoardColors(QColor color1, QColor color2)
+{
+    // setup the brushes with regards to their respective colors
+    QBrush brush1 = QBrush(Qt::SolidPattern);
+    brush1.setColor(color1);
+    QBrush brush2 = QBrush(Qt::SolidPattern);
+    brush2.setColor(color2);
+
+    // draw the squares in
+    drawBoardSquares(brush1, brush2);
 }
 
 void IsolationForm::drawBoardSquares(QBrush brush1, QBrush brush2)
@@ -221,6 +222,7 @@ void IsolationForm::moveComputer()
 
         // output the computer's move to the textbox, according to chess notation
         QString str = QString();
+
         if(GameSettings::computerFirst)
         {
             if(turnNumber <= 9)
@@ -236,7 +238,6 @@ void IsolationForm::moveComputer()
             str.append("\n");
             turnNumber++;
         }
-        ui->textBrowser_moves->moveCursor(QTextCursor::End);
         ui->textBrowser_moves->insertPlainText(str);
         ui->textBrowser_moves->moveCursor(QTextCursor::End);
 
@@ -312,6 +313,8 @@ void IsolationForm::movePlayer()
             ui->textBrowser_moves->insertPlainText(str);
             ui->textBrowser_moves->moveCursor(QTextCursor::End);
 
+            // once the human player has made their turn, set isHumanTurn to false,
+            // check if game is over, and then let the computer make their moev.
             GameSettings::isHumanTurn = false;
             checkTerminalState();
             moveComputer();
